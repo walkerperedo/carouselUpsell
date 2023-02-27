@@ -10,7 +10,7 @@ import { AppBridgeProvider } from "./components/providers/AppBridgeProvider.jsx"
 import { defaultGlobalState, GlobalStateContext, GlobalStateProvider } from "./components/providers/GlobalStateProvider.jsx"
 import { PolarisProvider } from "./components/providers/PolarisProvider.jsx"
 import { QueryProvider } from "./components/providers/QueryProvider.jsx"
-import { UpsellEditorStateProvider } from "./components/providers/UpsellEditorStateProvider.jsx"
+import { CarouselEditorStateProvider } from "./components/providers/CarouselEditorStateProvider.jsx"
 import { useAuthenticatedFetch } from "./hooks/useAuthenticatedFetch.js"
 import { useCheckSubscription } from "./hooks/useCheckSubscription.js"
 import { useGQL } from "./hooks/useGQL.js"
@@ -132,7 +132,7 @@ const withProviders = (AppComponent) => () =>
 				<AppBridgeProvider>
 					<QueryProvider>
 						<GlobalStateProvider>
-							<UpsellEditorStateProvider>
+							<CarouselEditorStateProvider>
 								<AppComponent />
 								<NavigationMenu
 									navigationLinks={[
@@ -143,7 +143,7 @@ const withProviders = (AppComponent) => () =>
 									]}
 									matcher={(link, location) => link.destination === location.pathname}
 								/>
-							</UpsellEditorStateProvider>
+							</CarouselEditorStateProvider>
 						</GlobalStateProvider>
 					</QueryProvider>
 				</AppBridgeProvider>

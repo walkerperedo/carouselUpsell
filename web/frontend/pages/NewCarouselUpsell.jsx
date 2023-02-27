@@ -4,12 +4,12 @@ import { DiamondAlertMajor, MobileBackArrowMajor } from "@shopify/polaris-icons"
 import React, { useContext, useEffect, useState } from "react"
 import BillingPlans from "../components/BillingPlans.jsx"
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx"
-import { defaultUpsellEditorState, UpsellEditorStateContext } from "../components/providers/UpsellEditorStateProvider.jsx"
+import { defaultCarouselEditorState, CarouselEditorStateContext } from "../components/providers/CarouselEditorStateProvider.jsx"
 import { CarouselEditor } from "../components/CarouselEditor.jsx"
 import { useAuthenticatedFetch } from "../hooks/useAuthenticatedFetch.js"
 
 const NewUpsell = () => {
-	const { upsell, setUpsell } = useContext(UpsellEditorStateContext)
+	const { upsell, setUpsell } = useContext(CarouselEditorStateContext)
 	const { state } = useContext(GlobalStateContext)
 	const navigate = useNavigate()
 	const authFetch = useAuthenticatedFetch()
@@ -27,7 +27,7 @@ const NewUpsell = () => {
 	}
 
 	useEffect(async () => {
-		setUpsell(defaultUpsellEditorState)
+		setUpsell(defaultCarouselEditorState)
 		await getNumberOfUpsellsCreated()
 	}, [])
 
