@@ -7,7 +7,7 @@ import CustomModal from "./CustomModal.jsx"
 import { UndoMajor } from "@shopify/polaris-icons"
 import { useParams } from "react-router-dom"
 
-export const UpsellStyling = ({ upsell, setUpsell }) => {
+export const CarouselStyling = ({ upsell, setUpsell }) => {
 	const { id } = useParams()
 	const [showCheckboxColorPicker, setShowCheckboxColorPicker] = useState(false)
 	const [showCheckmarkColorPicker, setShowCheckmarkColorPicker] = useState(false)

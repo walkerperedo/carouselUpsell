@@ -4,7 +4,7 @@ import { SettingsMajor } from "@shopify/polaris-icons"
 import React, { useContext, useEffect, useState } from "react"
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider"
 import { StatisticCard } from "../components/StatisticCard.jsx"
-import { UpsellsList } from "../components/UpsellsList.jsx"
+import { CarouselsList } from "../components/CarouselsList.jsx"
 import { useGetAllStoreUpsells } from "../hooks/upsellHooks.js"
 import { useAuthenticatedFetch } from "../hooks/useAuthenticatedFetch.js"
 
@@ -101,13 +101,13 @@ const Dashboard = () => {
 									<button className="neu-background neu-shadow neu-border-radius-2 neu-no-border" style={{ padding: "0.5rem", cursor: "pointer" }} onClick={() => navigate("/settings")}>
 										<Icon color="subdued" source={SettingsMajor} />
 									</button>
-									<button className="neu-background neu-shadow neu-border-radius-2 neu-no-border" style={{ padding: "0.5rem 1rem", cursor: "pointer" }} onClick={() => navigate("/newUpsell")}>
+									<button className="neu-background neu-shadow neu-border-radius-2 neu-no-border" style={{ padding: "0.5rem 1rem", cursor: "pointer" }} onClick={() => navigate("/newCarouselUpsell")}>
 										<span className="font-satoshi neu-text neu-text-600" style={{ fontSize: "0.9rem" }}>New Upsell</span>
 									</button>
 								</div>
 							</div>
 
-							<UpsellsList upsells={upsells} setUpsells={setUpsells} />
+							<CarouselsList upsells={upsells} setUpsells={setUpsells} />
 						</div>
 					</div>
 			}

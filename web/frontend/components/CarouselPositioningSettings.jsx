@@ -2,7 +2,7 @@ import { Select, TextField } from "@shopify/polaris"
 import React, { useContext, useEffect, useState } from "react"
 import { GlobalStateContext } from "./providers/GlobalStateProvider.jsx"
 
-export const UpsellPositioningSettings = () => {
+export const CarouselPositioningSettings = () => {
 	const { state, dispatch } = useContext(GlobalStateContext)
 
 	const [selectionType, setSelectionType] = useState("preset")

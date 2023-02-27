@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useDeleteUpsell, useUpdateUpsell } from "../hooks/upsellHooks.js"
 
-export const UpsellsListPopover = ({ upsell, setUpsells, setLoadingStatusToggle, setLoadingDelete }) => {
+export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggle, setLoadingDelete }) => {
 	const deleteUpsellById = useDeleteUpsell()
 	const updateUpsellById = useUpdateUpsell()
 

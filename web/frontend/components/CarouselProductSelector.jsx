@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react"
 import { useGQL } from "../hooks/useGQL.js"
 import { extractIdNumberFromGid } from "../utils/shopifyGid.js"
 
-export const UpsellProductSelector = ({ upsell, setUpsell }) => {
+export const CarouselProductSelector = ({ upsell, setUpsell }) => {
 	const gql = useGQL()
 
 	const [open, setOpen] = useState(false)

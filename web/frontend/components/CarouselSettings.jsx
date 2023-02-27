@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useCreateUpsell } from "../hooks/upsellHooks.js"
 import { useAuthenticatedFetch } from "../hooks/useAuthenticatedFetch.js"
 import { ShownForSelector } from "./ShownForSelector.jsx"
-import { UpsellProductSelector } from "./UpsellProductSelector.jsx"
+import { CarouselProductSelector } from "./CarouselProductSelector.jsx"
 
-export const UpsellSettings = ({ upsell, setUpsell }) => {
+export const CarouselSettings = ({ upsell, setUpsell }) => {
 	const { id } = useParams()
 	const authFetch = useAuthenticatedFetch()
 	const navigate = useNavigate()
@@ -77,7 +77,7 @@ export const UpsellSettings = ({ upsell, setUpsell }) => {
 				/>
 			</div>
 
-			<UpsellProductSelector upsell={upsell} setUpsell={setUpsell}/>
+			<CarouselProductSelector upsell={upsell} setUpsell={setUpsell}/>
 
 			<ShownForSelector upsell={upsell} setUpsell={setUpsell}/>
 		</div>

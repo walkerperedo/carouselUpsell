@@ -1143,7 +1143,7 @@ const getCurrencySymbol = (currencyCode) => {
 	return currencyCodeMap[currencyCode]?.symbol || currencyCode
 }
 
-export const UpsellCheckboxContainer = ({ upsell, loadingUpsellProductImage, upsellProductImage, upsellProductPrice, upsellProductCompareAtPrice, shopCurrency }) => {
+export const CarouselCheckboxContainer = ({ upsell, loadingUpsellProductImage, upsellProductImage, upsellProductPrice, upsellProductCompareAtPrice, shopCurrency }) => {
 	const [checked, setChecked] = useState(true)
 	const { id } = useParams()
 

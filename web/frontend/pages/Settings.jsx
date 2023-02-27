@@ -4,7 +4,7 @@ import { TickMinor } from "@shopify/polaris-icons"
 import React, { useContext, useState } from "react"
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx"
 import ThemeSupportSettings from "../components/ThemeSupportSettings.jsx"
-import { UpsellPositioningSettings } from "../components/UpsellPositioningSettings.jsx"
+import { CarouselPositioningSettings } from "../components/CarouselPositioningSettings.jsx"
 import { useUpdatePreferredUpsellPositioning } from "../hooks/upsellHooks.js"
 import { useFirestoreDataUpdate } from "../hooks/useFirestoreDataUpdate.js"
 
@@ -48,7 +48,7 @@ const Settings = () => {
 
 					<div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 						<ThemeSupportSettings/>
-						<UpsellPositioningSettings/>
+						<CarouselPositioningSettings/>
 					</div>
 
 					<div style={{ display: "flex", gap: "1rem", justifyContent: "end", alignItems: "center" }}>

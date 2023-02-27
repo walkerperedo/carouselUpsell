@@ -4,9 +4,9 @@ import React, { useContext, useEffect, useState } from "react"
 import previewImage from "../assets/previewImage.png"
 import { useGQL } from "../hooks/useGQL.js"
 import { GlobalStateContext } from "./providers/GlobalStateProvider.jsx"
-import { UpsellCheckboxContainer } from "./UpsellCheckboxContainer.jsx"
+import { CarouselCheckboxContainer } from "./CarouselCheckboxContainer.jsx"
 
-export const UpsellPreview = ({ upsell }) => {
+export const CarouselPreview = ({ upsell }) => {
 	const { state, dispatch } = useContext(GlobalStateContext)
 
 	const gql = useGQL()
@@ -76,7 +76,7 @@ export const UpsellPreview = ({ upsell }) => {
 						<SkeletonBodyText lines={10}/>
 					</div>
 
-					<UpsellCheckboxContainer upsell={upsell} upsellProductImage={upsellProductImage} loadingUpsellProductImage={loadingUpsellProductImage} upsellProductPrice={upsellProductPrice} upsellProductCompareAtPrice={upsellProductCompareAtPrice} shopCurrency={state.shopCurrency}/>
+					<CarouselCheckboxContainer upsell={upsell} upsellProductImage={upsellProductImage} loadingUpsellProductImage={loadingUpsellProductImage} upsellProductPrice={upsellProductPrice} upsellProductCompareAtPrice={upsellProductCompareAtPrice} shopCurrency={state.shopCurrency}/>
 					
 					<button style={{ width: "100%", background: "black", color: "whitesmoke", border: "none", fontWeight: "400", fontSize: "1rem", lineHeight: "20px", padding: "0.7rem", cursor: "pointer", fontFamily: "satoshi", borderRadius: "5px" }}>Add to Cart</button>
 				</div>

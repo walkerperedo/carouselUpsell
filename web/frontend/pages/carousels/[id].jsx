@@ -2,7 +2,7 @@ import { Loading, Page } from "@shopify/polaris"
 import React, { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { UpsellEditorStateContext } from "../../components/providers/UpsellEditorStateProvider.jsx"
-import { UpsellEditor } from "../../components/UpsellEditor.jsx"
+import { CarouselEditor } from "../../components/CarouselEditor.jsx"
 import { useGetUpsellById } from "../../hooks/upsellHooks.js"
 
 const EditUpsell = () => {
@@ -33,7 +33,7 @@ const EditUpsell = () => {
 				: upsellNotFound ?
 					<div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>Upsell not found</div>
 				:
-					<UpsellEditor upsell={upsell} setUpsell={setUpsell} newUpsell={false}/>
+					<CarouselEditor upsell={upsell} setUpsell={setUpsell} newUpsell={false}/>
 			}
 		</Page>
 	)

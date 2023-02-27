@@ -137,7 +137,7 @@ const withProviders = (AppComponent) => () =>
 								<NavigationMenu
 									navigationLinks={[
 										{ label: "Dashboard", destination: "/" },
-										{ label: "New Upsell", destination: "/newUpsell" },
+										{ label: "New Upsell", destination: "/newCarouselUpsell" },
 										{ label: "Billing", destination: "/billing" },
 										{ label: "Settings", destination: "/settings" },
 									]}

@@ -1,9 +1,9 @@
 import { useNavigate } from "@shopify/app-bridge-react"
 import React, { useContext } from "react"
 import { GlobalStateContext } from "./providers/GlobalStateProvider.jsx"
-import { UpsellsListItem } from "./UpsellsListItem.jsx"
+import { CarouselsListItem } from "./CarouselsListItem.jsx"
 
-export const UpsellsList = ({ upsells, setUpsells }) => {
+export const CarouselsList = ({ upsells, setUpsells }) => {
 	const { state } = useContext(GlobalStateContext)
 	const navigate = useNavigate()
 		
@@ -12,7 +12,7 @@ export const UpsellsList = ({ upsells, setUpsells }) => {
 			{
 				upsells.length ?
 					upsells.map((upsell, index) => (
-						<UpsellsListItem
+						<CarouselsListItem
 							upsell={upsell}
 							index={index}
 							setUpsells={setUpsells}
@@ -21,7 +21,7 @@ export const UpsellsList = ({ upsells, setUpsells }) => {
 						/>
 					))
 				: <div style={{ height: "5rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
-					You don&apos;t have any Upsells yet. <span style={{ marginLeft: "5px", textDecoration: "underline", cursor: "pointer" }} onClick={() => navigate("/newUpsell")}>Create your first Upsell</span>
+					You don&apos;t have any Upsells yet. <span style={{ marginLeft: "5px", textDecoration: "underline", cursor: "pointer" }} onClick={() => navigate("/newCarouselUpsell")}>Create your first Upsell</span>
 				</div>
 			}
 		</div>

@@ -3,7 +3,7 @@ import { Banner, Page, Spinner } from "@shopify/polaris"
 import React, { useContext, useState } from "react"
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx"
 import ThemeSupportSettings from "../components/ThemeSupportSettings.jsx"
-import { UpsellPositioningSettings } from "../components/UpsellPositioningSettings.jsx"
+import { CarouselPositioningSettings } from "../components/CarouselPositioningSettings.jsx"
 import { useFirestoreDataUpdate } from "../hooks/useFirestoreDataUpdate.js"
 
 export const InitialSetup = () => {
@@ -44,7 +44,7 @@ export const InitialSetup = () => {
 					<div>
 						<p className="neu-text font-satoshi" style={{ marginBottom: "1rem" }}>2. Choose where you want your upsells to be displayed</p>
 						<div className="neu-background neu-shadow neu-border-radius-1" style={{ padding: "1rem" }}>
-							<UpsellPositioningSettings/>
+							<CarouselPositioningSettings/>
 						</div>
 					</div>
 	
