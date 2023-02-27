@@ -1,0 +1,113 @@
+
+@font-face {
+	font-family: satoshi;
+	src: url(./Satoshi-Regular.otf);
+}
+
+.font-satoshi {
+	font-family: satoshi, sans-serif;
+}
+
+.neu-text {
+	color: #313A52 !important;
+}
+
+.neu-text-600 {
+	font-weight: 600;
+}
+
+.neu-shadow {
+	box-shadow:
+		2px 8px 24px rgba(0, 0, 0, 0.12),
+		inset 0px 2px 0px #FFFFFF;
+}
+
+.neu-shadow-inset {
+	box-shadow:
+		inset -3px -3px 0px #FFFFFF,
+		inset 3px 3px 7px rgba(156, 156, 156, 0.48) !important;
+}
+
+.neu-background {
+	background-image: linear-gradient(134.47deg, #F8F9FF -26.79%, #F8F9FF 230.75%) !important;
+}
+
+.neu-border-radius-1 {
+	border-radius: 15px !important;
+}
+
+.neu-border-radius-2 {
+	border-radius: 25px !important;
+}
+
+.neu-no-border {
+	border: none !important;
+}
+
+.neu-button {
+	padding: 0.7rem 0.9rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.2rem;
+}
+
+.neu-button:active:not(:disabled) {
+	box-shadow: inset 3px 3px 7px 0px #9C9C9C7A, inset -3px -3px 7px 0px #FFFFFF;
+}
+
+.neu-button:disabled {
+	cursor: not-allowed !important;
+}
+
+/* Neumorphism Polaris Overrides */
+
+.Polaris-Label, .Polaris-Choice__Label {
+	font-family: satoshi !important;
+}
+
+.Polaris-TextField__Input {
+	box-shadow:
+		inset 0px -1px 0px #FFFFFF,
+		inset 3px 3px 7px rgba(156, 156, 156, 0.48) !important;
+	border-radius: 100px !important;
+	border: 2px solid #F8F9FF;
+	background-image: linear-gradient(134.47deg, #F8F9FF -26.79%, #F8F9FF 230.75%) !important;
+	color: #313A52 !important;
+	font-weight: 400 !important;
+	padding: 0.7rem 1.1rem !important;
+}
+
+.Polaris-TextField__Input:focus {
+	outline: none !important;
+	border: 2px solid #0065FF !important;
+}
+
+.Polaris-TextField__Backdrop {
+	display: none !important;
+}
+
+.Polaris-Select__Content {
+	box-shadow:
+		2px 8px 24px rgba(0, 0, 0, 0.12),
+		inset 0px 2px 0px #FFFFFF;
+	background-image: linear-gradient(134.47deg, #F8F9FF -26.79%, #F8F9FF 230.75%) !important;
+	border-radius: 100px !important;
+	border: 2px solid #F8F9FF;
+	color: #313A52 !important;
+	font-weight: 400 !important;
+	padding: 0.5rem 1.2rem !important;
+}
+
+.Polaris-Select--disabled .Polaris-Select__Content {
+	box-shadow:
+		2px 8px 24px rgba(0, 0, 0, 0.12),
+		inset 0px 2px 0px #eee;
+	background-image: linear-gradient(134.47deg, #eeee -26.79%, #fff 230.75%) !important;
+	color: #ccc !important;
+}
+
+.Polaris-Select__Backdrop {
+	display: none;
+}

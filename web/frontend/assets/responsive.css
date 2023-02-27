@@ -1,0 +1,15 @@
+@media only screen and (max-width: 1110px) {
+	.upsell-editor {
+		flex-direction: column;
+	}
+	
+	.upsell-editor-preview {
+		position: relative !important;
+		top: 0 !important;
+		width: 100% !important;
+	}
+
+	.upsell-editor-settings {
+		width: 100% !important;
+	}
+}

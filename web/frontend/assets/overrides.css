@@ -1,0 +1,48 @@
+/* Polaris overrides */
+.Polaris-ChoiceList__Choices {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.Polaris-ChoiceList__Choices li {
+	width: 100%;
+}
+
+.Polaris-ChoiceList__Title {
+	font-size: 17px !important;
+	margin-bottom: 0.6rem !important;
+}
+
+.Polaris-Popover__Wrapper {
+	background-color: white !important;
+}
+
+.Polaris-Label__Text {
+	font-size: 16px !important;
+}
+
+.Polaris-Thumbnail--sizeSmall {
+	height: 1.5rem;
+}
+
+.Polaris-Choice__Label {
+	font-size: 16px !important;
+}
+
+.Polaris-SkeletonDisplayText__DisplayText {
+	max-width: none !important;
+	margin: 1.3rem 0;
+}
+
+.Polaris-Thumbnail--sizeMedium {
+	max-height: 2.7rem !important;
+}
+
+.Polaris-Icon {
+	margin: none !important;
+}
+
+/* Color picker overrides */
+.chrome-picker {
+	box-shadow: none !important;
+}
