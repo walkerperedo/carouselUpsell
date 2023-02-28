@@ -34,25 +34,6 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 				/>
 				{ !upsell.displayText && <div style={{ color: "#ff3838" }}>Display Message cannot be empty</div> }
 			</div>
-			<div style={{ marginTop: "1.5rem" }}>
-				<TextField
-					label="Priority"
-					type="number"
-					value={upsell.priority}
-					onChange={(value) => setUpsell({ priority: Number(!value ? 1 : value) })}
-					helpText="If there is more than one Upsell shown in the same product page, it will display the one with the lower priority number first"
-					min={1}
-				/>
-			</div>
-			<div style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}>
-				<Checkbox
-					label="Auto check"
-					checked={upsell.autoCheck}
-					onChange={(value) => setUpsell({ autoCheck: value })}
-					helpText="When enabled, the checkbox will be automatically checked"
-				/>
-			</div>
-
 			<div style={{ marginBottom: "1.5rem" }}>
 				<Checkbox
 					label="Show product image"
@@ -66,14 +47,6 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 					label="Show product compare at price"
 					checked={upsell.styling.showCompareAtPrice}
 					onChange={(value) => setUpsell({ styling: { ...upsell.styling, showCompareAtPrice: value } })}
-				/>
-			</div>
-
-			<div style={{ marginBottom: "1.5rem" }}>
-				<Checkbox
-					label="Show see more"
-					checked={upsell.seeMoreEnabled}
-					onChange={(value) => setUpsell({ seeMoreEnabled: value })}
 				/>
 			</div>
 

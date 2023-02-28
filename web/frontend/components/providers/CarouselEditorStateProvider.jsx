@@ -23,7 +23,7 @@ export const defaultCarouselEditorState = {
 		itemBackgroundColor: "",
 		itemTextColor: "#fff",
 	},
-	carrouselItems:[],
+	carouselItems:[],
 }
 
 export const CarouselEditorStateContext = React.createContext(defaultCarouselEditorState)
