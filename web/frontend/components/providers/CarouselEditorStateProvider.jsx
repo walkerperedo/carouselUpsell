@@ -11,7 +11,7 @@ export const defaultCarouselEditorState = {
 		addedToCart: 0,
 		conversions: 0,
 		revenue: 0,
-		views: 0
+		views: 0,
 	},
 	styling: {
 		showImage: false,
@@ -23,7 +23,7 @@ export const defaultCarouselEditorState = {
 		itemBackgroundColor: "",
 		itemTextColor: "#fff",
 	},
-	carouselItems:[],
+	carouselItems: [],
 }
 
 export const CarouselEditorStateContext = React.createContext(defaultCarouselEditorState)
@@ -36,9 +36,5 @@ export const CarouselEditorStateProvider = ({ children }) => {
 		}
 	}, defaultCarouselEditorState)
 
-	return (
-		<CarouselEditorStateContext.Provider value={{ upsell, setUpsell }}>
-			{children}
-		</CarouselEditorStateContext.Provider>
-	)
+	return <CarouselEditorStateContext.Provider value={{ upsell, setUpsell }}>{children}</CarouselEditorStateContext.Provider>
 }
