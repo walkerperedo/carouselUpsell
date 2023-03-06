@@ -1,5 +1,15 @@
 import express from "express"
-import { createUpsell, deleteUpsell, getAllStoreUpsells, getNumberOfUpsellsCreated, getUpsellById, getUpsells, updatePreferredUpsellPositioning, updateUpsell, updateUpsellStats } from "../helpers/upsellHelper.js"
+import {
+	createCarousel,
+	deleteUpsell,
+	getAllStoreUpsells,
+	getNumberOfUpsellsCreated,
+	getUpsellById,
+	getUpsells,
+	updatePreferredCarouselPositioning,
+	updateUpsell,
+	updateUpsellStats,
+} from "../helpers/carouselHelper.js"
 import { logger } from "../utils/logger.js"
 import apicache from "apicache"
 
@@ -11,14 +21,14 @@ export const deleteUpsellsCacheEntry = (productId) => {
 	apicache.clear(`/api/upsells/getUpsells/${productId}`)
 }
 
-router.post("/createUpsell", express.json(), async (req, res) => {
-	const { upsell } = req.body
+router.post("/createCarousel", express.json(), async (req, res) => {
+	const { carousel } = req.body
 
 	try {
-		const id = await createUpsell({ ...upsell, store: req.query.shop })
+		const id = await createCarousel({ ...carousel, store: req.query.shop })
 		return res.status(200).json({ id })
 	} catch (error) {
-		logger.warn("/createUpsell catched error", { error, upsell })
+		logger.warn("/createCarousel catched error", { error, carousel })
 		return res.status(500).send({ error: error.message })
 	}
 })
@@ -36,7 +46,7 @@ router.post("/deleteUpsell", async (req, res) => {
 
 router.post("/updateUpsell", express.json(), async (req, res) => {
 	const { upsellId, data } = req.body
-	
+
 	try {
 		await updateUpsell(upsellId, { ...data, store: req.query.shop })
 		return res.status(200).send({ upsellId })
@@ -68,7 +78,7 @@ router.get("/getUpsellById/:upsellId", async (req, res) => {
 	}
 })
 
-router.post("/updateUpsellStats", async (req ,res) => {
+router.post("/updateUpsellStats", async (req, res) => {
 	try {
 		await updateUpsellStats(req.body.upsellId, req.body.field, req.body.value)
 		logger.info("/updateUpsellStats stats updated for", req.body.upsellId, req.body.field, req.body.value)
@@ -81,7 +91,7 @@ router.post("/updateUpsellStats", async (req ,res) => {
 
 router.get("/getUpsells/:productId", async (req, res) => {
 	// apicache.middleware("24 hours", onlyStatus200),
-	
+
 	try {
 		const upsells = await getUpsells(req.params.productId, req.query.store || "")
 		logger.info("/getUpsells upsells retrieved", upsells.length)
@@ -92,12 +102,12 @@ router.get("/getUpsells/:productId", async (req, res) => {
 	}
 })
 
-router.post("/updatePreferredUpsellPositioning", async (req ,res) => {
+router.post("/updatePreferredCarouselPositioning", async (req, res) => {
 	try {
-		await updatePreferredUpsellPositioning(req.query.shop, req.body.preferredUpsellPositioning)
+		await updatePreferredCarouselPositioning(req.query.shop, req.body.preferredCarouselPositioning)
 		return res.status(200).send()
 	} catch (error) {
-		logger.warn("/updatePreferredUpsellPositioning catched error", { error })
+		logger.warn("/updatePreferredCarouselPositioning catched error", { error })
 		return res.status(500).send({ error: error.message })
 	}
 })

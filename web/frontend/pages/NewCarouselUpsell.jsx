@@ -17,7 +17,7 @@ const NewUpsell = () => {
 	const [loadingNumberOfUpsellsCreated, setLoadingNumberOfUpsellsCreated] = useState(true)
 
 	const getNumberOfUpsellsCreated = async () => {
-		await authFetch("/api/upsells/getNumberOfUpsellsCreated")
+		await authFetch("/api/carousels/getNumberOfUpsellsCreated")
 			.then((res) => res.json())
 			.then((json) => {
 				setNumberOfUpsellsCreated(json.numberOfUpsellsCreated || 0)

@@ -44,7 +44,7 @@ const App = () => {
 						dispatch({
 							loadingUserData: false,
 							hasCompletedInitialSetup: res.hasCompletedInitialSetup || defaultGlobalState.hasCompletedInitialSetup,
-							preferredUpsellPositioning: res.preferredUpsellPositioning || defaultGlobalState.preferredUpsellPositioning,
+							preferredCarousellPositioning: res.preferredCarousellPositioning || defaultGlobalState.preferredCarousellPositioning,
 						})
 					}
 				})

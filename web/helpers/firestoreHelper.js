@@ -6,11 +6,11 @@ dotenv.config()
 
 admin.initializeApp({
 	credential: admin.credential.cert({
-		"project_id": process.env.FIREBASE_PROJECT_ID,
-		"private_key": process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-		"client_email": process.env.FIREBASE_CLIENT_EMAIL
+		project_id: process.env.FIREBASE_PROJECT_ID,
+		private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+		client_email: process.env.FIREBASE_CLIENT_EMAIL,
 	}),
-	databaseURL: process.env.FIREBASE_DB_URL
+	databaseURL: process.env.FIREBASE_DB_URL,
 })
 
 export default admin
@@ -19,7 +19,10 @@ const db = admin.firestore()
 
 export const setStoreData = async (store, data) => {
 	logger.debug("[setStoreData]", { store, data })
-	return await db.collection("stores").doc(store).set(data, { merge: true })
+	return await db
+		.collection("stores")
+		.doc(store)
+		.set(data, { merge: true })
 		.catch((err) => {
 			logger.error("[setStoreData] Catched error", { error: err })
 			// Bugsnag.notify({ ...err }, (e) => e.addMetadata("metadata", { store, data }))
@@ -28,7 +31,10 @@ export const setStoreData = async (store, data) => {
 }
 
 export const getStoreData = async (store, allFields = false) => {
-	return await db.collection("stores").doc(store).get()
+	return await db
+		.collection("stores")
+		.doc(store)
+		.get()
 		.then((doc) => {
 			if (allFields) {
 				return doc.data()
@@ -36,7 +42,7 @@ export const getStoreData = async (store, allFields = false) => {
 				return {
 					hasTutorialDismissed: doc?.data()?.hasTutorialDismissed ?? null,
 					hasCompletedInitialSetup: doc?.data()?.hasCompletedInitialSetup ?? null,
-					preferredUpsellPositioning: doc?.data()?.preferredUpsellPositioning ?? null
+					preferredCarouselPositioning: doc?.data()?.preferredCarouselPositioning ?? null,
 				}
 			}
 		})
@@ -63,12 +69,12 @@ export const checkIfUserTrialed = async (store, trialDays) => {
 		const hasTrialed = storeData?.hasTrialed || false
 		const startedTrialDate = storeData?.startedTrialDate?.toDate() || null
 		logger.debug("[checkIfUserTrialed] hasUserTrialed", { store, hasTrialed, startedTrialDate })
-		
+
 		if (storeData.error) {
 			logger.error("[checkIfUserTrialed] hasUserTrialed error", store, storeData.error)
 			// Bugsnag.notify({ ...storeData.error }, (e) => e.addMetadata("metadata", { store }))
 		}
-		
+
 		if (hasTrialed && hasTrialed === true) {
 			return { hasUserTrialed: true, trialDaysLeft: Math.max(0, trialDays - daysBetween(startedTrialDate, new Date())) }
 		} else {

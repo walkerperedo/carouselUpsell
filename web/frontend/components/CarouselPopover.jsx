@@ -2,11 +2,11 @@ import { ActionList, Icon, Popover, Toast } from "@shopify/polaris"
 import { MobileHorizontalDotsMajor } from "@shopify/polaris-icons"
 import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { useDeleteUpsell, useUpdateUpsell } from "../hooks/upsellHooks.js"
+import { useDeleteCarousel, useUpdateCarousel } from "../hooks/carouselHooks.js"
 
 export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggle, setLoadingDelete }) => {
-	const deleteUpsellById = useDeleteUpsell()
-	const updateUpsellById = useUpdateUpsell()
+	const deleteCarouselById = useDeleteCarousel()
+	const updateCarouselById = useUpdateCarousel()
 
 	const navigate = useNavigate()
 
@@ -19,7 +19,7 @@ export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggl
 			setPopoverOpen(false)
 			setLoadingDelete(true)
 
-			await deleteUpsellById(upsell.id)
+			await deleteCarouselById(upsell.id)
 
 			setUpsells((upsells) => {
 				return upsells.filter((u) => u.id != upsell.id)
@@ -37,7 +37,7 @@ export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggl
 			setPopoverOpen(false)
 			setLoadingStatusToggle(true)
 
-			await updateUpsellById(upsell.id, { ...upsell, published: !upsell.published })
+			await updateCarouselById(upsell.id, { ...upsell, published: !upsell.published })
 
 			setUpsells((upsells) => {
 				return upsells.map((u) => {
@@ -47,7 +47,6 @@ export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggl
 					return u
 				})
 			})
-
 		} catch (error) {
 			setToastOpen(true)
 			setToastErrorMessage("Error updating Upsell")
@@ -61,7 +60,11 @@ export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggl
 			<Popover
 				active={popoverOpen}
 				activator={
-					<button className="neu-background neu-shadow neu-border-radius-2 neu-no-border" style={{ padding: "0.5rem 0.5rem", cursor: "pointer" }} onClick={() => setPopoverOpen(!popoverOpen)}>
+					<button
+						className="neu-background neu-shadow neu-border-radius-2 neu-no-border"
+						style={{ padding: "0.5rem 0.5rem", cursor: "pointer" }}
+						onClick={() => setPopoverOpen(!popoverOpen)}
+					>
 						<Icon source={MobileHorizontalDotsMajor} color="base" />
 					</button>
 				}
@@ -73,18 +76,18 @@ export const CarouselsListPopover = ({ upsell, setUpsells, setLoadingStatusToggl
 					items={[
 						{
 							content: upsell.published ? "Unpublish" : "Publish",
-							onAction: toggleUpsellStatus
+							onAction: toggleUpsellStatus,
 						},
 						{
 							content: "Delete",
 							onAction: deleteUpsell,
-							destructive: true
+							destructive: true,
 						},
 					]}
 				/>
 			</Popover>
 
-			{ toastOpen && <Toast content={toastErrorMessage} onDismiss={() => setToastOpen(false)} error/> }
+			{toastOpen && <Toast content={toastErrorMessage} onDismiss={() => setToastOpen(false)} error />}
 		</>
 	)
 }

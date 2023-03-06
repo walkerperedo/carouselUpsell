@@ -1207,7 +1207,7 @@ export const CarouselItemsContainer = (props) => {
 	if (upsell.carouselItems.length < 3) {
 		return null
 	}
-	console.log(variantsInfo)
+
 	return (
 		<>
 			<div className="upsell-label">{upsell.displayText}</div>

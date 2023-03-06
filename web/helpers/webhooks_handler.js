@@ -1,6 +1,6 @@
 import { AppInstallations } from "./app_installations.js"
 import { checkIfUserTrialed, setStoreData } from "./firestoreHelper.js"
-import { updateShownForByAssociatedCollectionIds, updateUpsellStats } from "./upsellHelper.js"
+import { updateShownForByAssociatedCollectionIds, updateUpsellStats } from "./carouselHelper.js"
 import * as dotenv from "dotenv"
 import { logger } from "../utils/logger.js"
 import { Shopify } from "@shopify/shopify-api"
@@ -10,15 +10,15 @@ export const ensureValidWebhookSubscriptions = async (store) => {
 	try {
 		const hostname = Shopify.Context.HOST_NAME
 		const sessions = await Shopify.Context.SESSION_STORAGE.findSessionsByShop(store)
-		
+
 		if (!sessions?.[0]?.accessToken) {
 			logger.warn("[ensureValidWebhookSubscriptions] No accessToken found", { sessions, store })
 			return
 		}
-	
+
 		const responses = await Shopify.Webhooks.Registry.registerAll({
 			shop: sessions[0].shop,
-			accessToken: sessions[0].accessToken
+			accessToken: sessions[0].accessToken,
 		})
 
 		return responses
@@ -29,7 +29,7 @@ export const ensureValidWebhookSubscriptions = async (store) => {
 
 export const appUninstalledHandler = async (_topic, shop, _body) => {
 	logger.info("/api/webhooks - APP_UNINSTALLED - Deleting for", { shop, body: _body })
-	
+
 	await AppInstallations.delete(shop)
 
 	setStoreData(shop, { status: "UNINSTALLED" })
@@ -37,7 +37,7 @@ export const appUninstalledHandler = async (_topic, shop, _body) => {
 
 export const appSubscriptionsUpdateHandler = async (_topic, shop, _body) => {
 	logger.info("/api/webhooks - APP_SUBSCRIPTIONS_UPDATE - ", { shop, body: _body })
-	
+
 	let { hasUserTrialed, trialDaysLeft } = await checkIfUserTrialed(shop, parseInt(process.env.TRIAL_DAYS))
 	let appSubscriptionInfo = {}
 
@@ -51,9 +51,9 @@ export const appSubscriptionsUpdateHandler = async (_topic, shop, _body) => {
 	}
 	logger.debug("/api/webhooks Test body", { appSubscriptionInfo })
 	setStoreData(shop, {
-		appSubscription : appSubscriptionInfo,
+		appSubscription: appSubscriptionInfo,
 		hasTrialed: true,
-		...(hasUserTrialed === false && { startedTrialDate: new Date() })
+		...(hasUserTrialed === false && { startedTrialDate: new Date() }),
 	})
 }
 
@@ -76,11 +76,11 @@ export const ordersCreateHandler = async (_topic, shop, _body) => {
 
 	try {
 		const parsedBody = JSON.parse(_body)
-		
+
 		// No line_items field present is a possibility due to API 2022-10 and greater requiring protected customer data access
-		parsedBody?.line_items?.map(lineItem => {
+		parsedBody?.line_items?.map((lineItem) => {
 			if (lineItem.properties) {
-				const upsellId = lineItem.properties.find(property => property.name == "_justUpsell")?.value || ""
+				const upsellId = lineItem.properties.find((property) => property.name == "_justUpsell")?.value || ""
 
 				if (upsellId) {
 					const priceSetPrice = parseFloat(lineItem.price_set?.shop_money?.amount || "") || 0

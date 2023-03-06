@@ -6,13 +6,13 @@ import { useParams } from "react-router-dom"
 import { CarouselPreview } from "./CarouselPreview.jsx"
 import { CarouselSettings } from "./CarouselSettings.jsx"
 import { CarouselStyling } from "./CarouselStyling.jsx"
-import { useCreateUpsell, useUpdateUpsell } from "../hooks/upsellHooks.js"
+import { useCreateCarousel, useUpdateCarousel } from "../hooks/carouselHooks.js"
 
 export const CarouselEditor = ({ upsell, setUpsell, newUpsell }) => {
 	const navigate = useNavigate()
 	const { id } = useParams()
-	const updateUpsell = useUpdateUpsell()
-	const createUpsell = useCreateUpsell()
+	const updateUpsell = useUpdateCarousel()
+	const createCarousel = useCreateCarousel()
 
 	const [selectedTab, setSelectedTab] = useState(0)
 	const [saving, setSaving] = useState(false)
@@ -20,15 +20,15 @@ export const CarouselEditor = ({ upsell, setUpsell, newUpsell }) => {
 	const [toastOpen, setToastOpen] = useState(false)
 	const [toastErrorMessage, setToastErrorMessage] = useState("")
 
-	const saveChanges = async (upsell) => {
+	const saveChanges = async (carousel) => {
 		setSaving(true)
 
 		let res = null
 
 		if (newUpsell) {
-			res = await createUpsell(upsell)
+			res = await createCarousel(carousel)
 		} else {
-			res = await updateUpsell(id, upsell)
+			res = await updateUpsell(id, carousel)
 		}
 
 		setSaving(false)
@@ -52,7 +52,7 @@ export const CarouselEditor = ({ upsell, setUpsell, newUpsell }) => {
 	const formNotValidated =
 		!upsell.name ||
 		!upsell.displayText ||
-		!upsell.upsellVariantId ||
+		!upsell.carouselItems.length === 0 ||
 		(upsell.shownFor.length === 0 && upsell.associatedCollectionIds.length === 0)
 
 	return (

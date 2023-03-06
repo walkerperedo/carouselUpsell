@@ -1,7 +1,7 @@
 import { Checkbox, Spinner, TextField, Toast } from "@shopify/polaris"
 import React, { useCallback, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { useCreateUpsell } from "../hooks/upsellHooks.js"
+import { useCreateCarousel } from "../hooks/carouselHooks.js"
 import { useAuthenticatedFetch } from "../hooks/useAuthenticatedFetch.js"
 import { ShownForSelector } from "./ShownForSelector.jsx"
 import { CarouselProductSelector } from "./CarouselProductSelector.jsx"
@@ -10,7 +10,7 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 	const { id } = useParams()
 	const authFetch = useAuthenticatedFetch()
 	const navigate = useNavigate()
-	const createUpsell = useCreateUpsell()
+	const createUpsell = useCreateCarousel()
 
 	return (
 		<div style={{ marginTop: "2rem" }}>

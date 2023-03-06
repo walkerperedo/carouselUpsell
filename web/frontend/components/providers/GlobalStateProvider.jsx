@@ -9,7 +9,7 @@ export const defaultGlobalState = {
 	shopCurrency: "",
 	isCurrencyFetched: false,
 	hasCompletedInitialSetup: false,
-	preferredUpsellPositioning: "before($ADD_TO_CART$)"
+	preferredCarouselPositioning: "before($ADD_TO_CART$)",
 }
 
 export const GlobalStateContext = React.createContext(defaultGlobalState)
@@ -22,9 +22,5 @@ export const GlobalStateProvider = ({ children }) => {
 		}
 	}, defaultGlobalState)
 
-	return (
-		<GlobalStateContext.Provider value={{ state, dispatch }}>
-			{children}
-		</GlobalStateContext.Provider>
-	)
+	return <GlobalStateContext.Provider value={{ state, dispatch }}>{children}</GlobalStateContext.Provider>
 }

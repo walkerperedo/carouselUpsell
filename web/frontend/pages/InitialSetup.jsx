@@ -16,7 +16,7 @@ export const InitialSetup = () => {
 
 	const finishSetup = async () => {
 		setLoading(true)
-		await updateFirestoreData({ hasCompletedInitialSetup: true, preferredUpsellPositioning: state.preferredUpsellPositioning })
+		await updateFirestoreData({ hasCompletedInitialSetup: true, preferredCarouselPositioning: state.preferredCarouselPositioning })
 		dispatch({ hasCompletedInitialSetup: true })
 		setLoading(false)
 		navigate("/")
@@ -26,42 +26,43 @@ export const InitialSetup = () => {
 		<Page fullWidth>
 			<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 				<div style={{ width: "520px", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
-					<h1 className="neu-text font-satoshi" style={{ fontSize: "2rem", marginBottom: "1rem" }}>Hey! Welcome to JustUpsell</h1>
-	
+					<h1 className="neu-text font-satoshi" style={{ fontSize: "2rem", marginBottom: "1rem" }}>
+						Hey! Welcome to JustUpsell
+					</h1>
+
 					<Banner status="info">
-						<h2 className="neu-text font-satoshi">
-							Please follow the steps below to start using the app
-						</h2>
+						<h2 className="neu-text font-satoshi">Please follow the steps below to start using the app</h2>
 					</Banner>
 
 					<div>
-						<p className="neu-text font-satoshi" style={{ marginBottom: "1rem" }}>1. Enable the app</p>
+						<p className="neu-text font-satoshi" style={{ marginBottom: "1rem" }}>
+							1. Enable the app
+						</p>
 						<div className="neu-background neu-shadow neu-border-radius-1" style={{ padding: "1rem" }}>
-							<ThemeSupportSettings setHasEnabledApp={setHasEnabledApp}/>
+							<ThemeSupportSettings setHasEnabledApp={setHasEnabledApp} />
 						</div>
 					</div>
 
 					<div>
-						<p className="neu-text font-satoshi" style={{ marginBottom: "1rem" }}>2. Choose where you want your upsells to be displayed</p>
+						<p className="neu-text font-satoshi" style={{ marginBottom: "1rem" }}>
+							2. Choose where you want your upsells to be displayed
+						</p>
 						<div className="neu-background neu-shadow neu-border-radius-1" style={{ padding: "1rem" }}>
-							<CarouselPositioningSettings/>
+							<CarouselPositioningSettings />
 						</div>
 					</div>
-	
+
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
-						<h2 className="neu-text font-satoshi">Click <span style={{ fontWeight: "bold" }}>Next</span> once you have completed the steps above</h2>
+						<h2 className="neu-text font-satoshi">
+							Click <span style={{ fontWeight: "bold" }}>Next</span> once you have completed the steps above
+						</h2>
 						<button
 							className="neu-background neu-shadow neu-border-radius-2 neu-button neu-no-border"
 							style={{ padding: "0.5rem 1rem" }}
 							onClick={finishSetup}
-							disabled={loading || !hasEnabledApp || !state.preferredUpsellPositioning}
+							disabled={loading || !hasEnabledApp || !state.preferredCarouselPositioning}
 						>
-							{
-								loading ?
-									<Spinner size="small"/>
-								:
-									<span className="neu-text font-satoshi">Next</span>
-							}
+							{loading ? <Spinner size="small" /> : <span className="neu-text font-satoshi">Next</span>}
 						</button>
 					</div>
 				</div>

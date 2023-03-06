@@ -3,14 +3,14 @@ import React, { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { CarouselEditorStateContext } from "../../components/providers/CarouselEditorStateProvider.jsx"
 import { CarouselEditor } from "../../components/CarouselEditor.jsx"
-import { useGetUpsellById } from "../../hooks/upsellHooks.js"
+import { useGetCarouselById } from "../../hooks/carouselHooks.js"
 
 const EditUpsell = () => {
 	const { id } = useParams()
-	const getUpsellById = useGetUpsellById()
+	const getUpsellById = useGetCarouselById()
 
 	const { upsell, setUpsell } = useContext(CarouselEditorStateContext)
-	
+
 	const [loading, setLoading] = useState(true)
 	const [upsellNotFound, setUpsellNotFound] = useState(false)
 
@@ -27,14 +27,13 @@ const EditUpsell = () => {
 
 	return (
 		<Page fullWidth>
-			{
-				loading ?
-					<Loading />
-				: upsellNotFound ?
-					<div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>Upsell not found</div>
-				:
-					<CarouselEditor upsell={upsell} setUpsell={setUpsell} newUpsell={false}/>
-			}
+			{loading ? (
+				<Loading />
+			) : upsellNotFound ? (
+				<div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>Upsell not found</div>
+			) : (
+				<CarouselEditor upsell={upsell} setUpsell={setUpsell} newUpsell={false} />
+			)}
 		</Page>
 	)
 }

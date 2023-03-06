@@ -14,7 +14,10 @@ export const getAllProductIdsFromCollectionIds = async (store, collectionIds) =>
 	}
 
 	for (const collectionId of collectionIds) {
-		const res = await graphqlProxy(store, accessToken, `{
+		const res = await graphqlProxy(
+			store,
+			accessToken,
+			`{
 			collection(id: "gid://shopify/Collection/${collectionId}") {
 				products(first: 250) {
 					nodes {
@@ -22,10 +25,11 @@ export const getAllProductIdsFromCollectionIds = async (store, collectionIds) =>
 					}
 				}
 			}
-		}`)
-		
+		}`
+		)
+
 		if (res?.body?.data?.collection?.products?.nodes) {
-			res.body.data.collection.products.nodes.map(product => {
+			res.body.data.collection.products.nodes.map((product) => {
 				if (product.id) {
 					const id = /\d+/.exec(product.id)?.[0] || null
 					if (id) productIds.push(id)
@@ -37,22 +41,22 @@ export const getAllProductIdsFromCollectionIds = async (store, collectionIds) =>
 	return productIds
 }
 
-export const createUpsell = async (upsell) => {
-	if (upsell.store && upsell.associatedCollectionIds.length > 0) {
-		upsell.shownFor = await getAllProductIdsFromCollectionIds(upsell.store, upsell.associatedCollectionIds)
+export const createCarousel = async (carousel) => {
+	if (carousel.store && carousel.associatedCollectionIds.length > 0) {
+		carousel.shownFor = await getAllProductIdsFromCollectionIds(carousel.store, carousel.associatedCollectionIds)
 	}
 
-	const preferredUpsellPositioning = (await getStoreData(upsell.store, true))?.preferredUpsellPositioning || "before($ADD_TO_CART$)"
+	const preferredCarouselPositioning = (await getStoreData(carousel.store, true))?.preferredCarouselPositioning || "before($ADD_TO_CART$)"
 
-	const response = await db.collection("upsells").add({
-		...upsell,
-		positioning: preferredUpsellPositioning
+	const response = await db.collection("carousels").add({
+		...carousel,
+		positioning: preferredCarouselPositioning,
 	})
 	return response.id || null
 }
 
 export const deleteUpsell = async (upsellId) => {
-	return await db.collection("upsells").doc(upsellId).delete()
+	return await db.collection("carousels").doc(upsellId).delete()
 }
 
 export const updateUpsell = async (upsellId, upsell) => {
@@ -60,34 +64,45 @@ export const updateUpsell = async (upsellId, upsell) => {
 		upsell.shownFor = await getAllProductIdsFromCollectionIds(upsell.store, upsell.associatedCollectionIds)
 	}
 
-	const preferredUpsellPositioning = (await getStoreData(upsell.store, true))?.preferredUpsellPositioning || "before($ADD_TO_CART$)"
+	const preferredCarouselPositioning = (await getStoreData(upsell.store, true))?.preferredCarouselPositioning || "before($ADD_TO_CART$)"
 
-	return await db.collection("upsells").doc(upsellId).update({
-		...upsell,
-		positioning: preferredUpsellPositioning
-	})
+	return await db
+		.collection("upsells")
+		.doc(upsellId)
+		.update({
+			...upsell,
+			positioning: preferredCarouselPositioning,
+		})
 }
 
 export const getAllStoreUpsells = async (store) => {
 	const docs = []
-	await db.collection("upsells").where("store", "==", store).get()
-		.then(snap => {
-			snap.docs.map(upsell => docs.push({ id: upsell.id, ...upsell.data() }))
+	await db
+		.collection("carousels")
+		.where("store", "==", store)
+		.get()
+		.then((snap) => {
+			snap.docs.map((upsell) => docs.push({ id: upsell.id, ...upsell.data() }))
 		})
 	return docs
 }
 
 export const getUpsellById = async (upsellId) => {
-	const doc = await db.collection("upsells").doc(upsellId).get()
+	const doc = await db.collection("carousels").doc(upsellId).get()
 	return doc?.data() || null
 }
 
 export const updateUpsellStats = async (upsellId, field, value) => {
-	return await db.collection("upsells").doc(upsellId).update({ [`stats.${field}`]: admin.firestore.FieldValue.increment(value) })
+	return await db
+		.collection("carousels")
+		.doc(upsellId)
+		.update({ [`stats.${field}`]: admin.firestore.FieldValue.increment(value) })
 }
 
 export const updateShownForByAssociatedCollectionIds = async (shop, updatedCollectionId) => {
-	const upsellsAssociatedWithUpdatedCollectionId = (await db.collection("upsells").where("associatedCollectionIds", "array-contains", updatedCollectionId).get()).docs
+	const upsellsAssociatedWithUpdatedCollectionId = (
+		await db.collection("carousels").where("associatedCollectionIds", "array-contains", updatedCollectionId).get()
+	).docs
 	if (upsellsAssociatedWithUpdatedCollectionId.length === 0) return
 
 	for (const upsell of upsellsAssociatedWithUpdatedCollectionId) {
@@ -108,7 +123,10 @@ export const getUpsellVariantMetadataFromShopify = async (store, variantId, upse
 		return null
 	}
 
-	const res = await graphqlProxy(store, accessToken, `{
+	const res = await graphqlProxy(
+		store,
+		accessToken,
+		`{
 		productVariant(id: "gid://shopify/ProductVariant/${variantId}") {
 			image {
 				url
@@ -125,15 +143,17 @@ export const getUpsellVariantMetadataFromShopify = async (store, variantId, upse
 				}
 			}
 		}
-	}`)
+	}`
+	)
 
 	const image = res?.body?.data?.productVariant?.image?.url || res?.body?.data?.productVariant?.product?.featuredImage?.url || null
 	const price = res?.body?.data?.productVariant?.price || null
 	const compareAtPrice = res?.body?.data?.productVariant?.compareAtPrice || null
 	const availableForSale = res?.body?.data?.productVariant?.availableForSale ?? false
 	const description = res?.body?.data?.productVariant?.product?.description
-	const variantName = res?.body?.data?.productVariant?.displayName?.includes("Default Title") ? res?.body?.data?.productVariant?.product?.title : res?.body?.data?.productVariant?.displayName
-
+	const variantName = res?.body?.data?.productVariant?.displayName?.includes("Default Title")
+		? res?.body?.data?.productVariant?.product?.title
+		: res?.body?.data?.productVariant?.displayName
 
 	return {
 		...upsellToReturn,
@@ -142,7 +162,7 @@ export const getUpsellVariantMetadataFromShopify = async (store, variantId, upse
 		compareAtPrice,
 		availableForSale,
 		description,
-		variantName
+		variantName,
 	}
 }
 
@@ -151,39 +171,34 @@ export const getUpsells = async (productId, store) => {
 	const metadataPromisesArr = []
 	let upsells = []
 
-	const globalUpsells = db.collection("upsells").where("store", "==", store).where("shownFor", "array-contains", "*").get()
-	const shownForUpsells = db.collection("upsells").where("shownFor", "array-contains", productId).get()
-	
-	await Promise.allSettled([globalUpsells, shownForUpsells])
-		.then(responses => {
-			responses.map(res => {
-				if (res.value) {
-					res.value.docs.map(upsell => {
-						upsells.push({ id: upsell.id, ...upsell.data() })
-					})
-				}
-			})
+	const globalUpsells = db.collection("carousels").where("store", "==", store).where("shownFor", "array-contains", "*").get()
+	const shownForUpsells = db.collection("carousels").where("shownFor", "array-contains", productId).get()
+
+	await Promise.allSettled([globalUpsells, shownForUpsells]).then((responses) => {
+		responses.map((res) => {
+			if (res.value) {
+				res.value.docs.map((upsell) => {
+					upsells.push({ id: upsell.id, ...upsell.data() })
+				})
+			}
 		})
+	})
 
 	if (upsells.length === 0) return []
 
 	for (const upsell of upsells) {
 		if (upsell.published && upsell.store && upsell.upsellVariantId) {
-			const productMetadataPromise = getUpsellVariantMetadataFromShopify(
-				upsell.store,
-				upsell.upsellVariantId,
-				{
-					id: upsell.id,
-					autoCheck: upsell.autoCheck,
-					displayText: upsell.displayText,
-					positioning: upsell.positioning,
-					priority: upsell.priority,
-					styling: upsell.styling,
-					upsellProductId: upsell.upsellProductId,
-					upsellVariantId: upsell.upsellVariantId,
-					seeMoreEnabled: upsell.seeMoreEnabled
-				}
-			)
+			const productMetadataPromise = getUpsellVariantMetadataFromShopify(upsell.store, upsell.upsellVariantId, {
+				id: upsell.id,
+				autoCheck: upsell.autoCheck,
+				displayText: upsell.displayText,
+				positioning: upsell.positioning,
+				priority: upsell.priority,
+				styling: upsell.styling,
+				upsellProductId: upsell.upsellProductId,
+				upsellVariantId: upsell.upsellVariantId,
+				seeMoreEnabled: upsell.seeMoreEnabled,
+			})
 
 			if (productMetadataPromise) {
 				metadataPromisesArr.push(productMetadataPromise)
@@ -191,28 +206,27 @@ export const getUpsells = async (productId, store) => {
 		}
 	}
 
-	await Promise.allSettled(metadataPromisesArr)
-		.then(responses => {
-			responses.map(res => {
-				if (res.value) {
-					upsellsToReturn.push(res.value)
-				}
-			})
+	await Promise.allSettled(metadataPromisesArr).then((responses) => {
+		responses.map((res) => {
+			if (res.value) {
+				upsellsToReturn.push(res.value)
+			}
 		})
+	})
 
 	return upsellsToReturn
 }
 
-export const updatePreferredUpsellPositioning = async (store, preferredUpsellPositioning) => {
-	await setStoreData(store, { preferredUpsellPositioning })
-	const upsells = (await db.collection("upsells").where("store", "==", store).get()).docs
+export const updatePreferredCarouselPositioning = async (store, preferredCarouselPositioning) => {
+	await setStoreData(store, { preferredCarouselPositioning })
+	const upsells = (await db.collection("carousels").where("store", "==", store).get()).docs
 
 	for (const upsell of upsells) {
-		await upsell.ref.update({ positioning: preferredUpsellPositioning })
+		await upsell.ref.update({ positioning: preferredCarouselPositioning })
 	}
 }
 
 export const getNumberOfUpsellsCreated = async (store) => {
-	const upsells = await db.collection("upsells").where("store", "==", store).get()
+	const upsells = await db.collection("carousels").where("store", "==", store).get()
 	return upsells.docs.length
 }

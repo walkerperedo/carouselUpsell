@@ -9,7 +9,13 @@ import { AppInstallations } from "./helpers/app_installations.js"
 import { graphqlProxy } from "./helpers/graphql.js"
 import redirectToAuth from "./helpers/redirect-to-auth.js"
 import { setupGDPRWebHooks } from "./helpers/setup_gdpr.js"
-import { appSubscriptionsUpdateHandler, appUninstalledHandler, ordersCreateHandler, collectionsUpdateHandler, ensureValidWebhookSubscriptions } from "./helpers/webhooks_handler.js"
+import {
+	appSubscriptionsUpdateHandler,
+	appUninstalledHandler,
+	ordersCreateHandler,
+	collectionsUpdateHandler,
+	ensureValidWebhookSubscriptions,
+} from "./helpers/webhooks_handler.js"
 import applyAuthMiddleware from "./middleware/auth.js"
 import verifyRequest from "./middleware/verify-request.js"
 import applyThemeSupportRoutes from "./routes/themeSupportRoutes.js"
@@ -33,7 +39,7 @@ Shopify.Context.initialize({
 	HOST_SCHEME: process.env.HOST.split("://")[0],
 	API_VERSION: ApiVersion.July22,
 	IS_EMBEDDED_APP: true,
-	SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH)
+	SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
 })
 
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", { path: "/api/webhooks", webhookHandler: appUninstalledHandler })
@@ -63,7 +69,7 @@ export async function createServer(
 	app.use(cookieParser(Shopify.Context.API_SECRET_KEY))
 
 	applyAuthMiddleware(app, { billing: billingSettings })
-	
+
 	app.post("/api/webhooks", async (req, res) => {
 		try {
 			await Shopify.Webhooks.Registry.process(req, res)
@@ -78,8 +84,8 @@ export async function createServer(
 
 	app.use("/api/*", cors())
 
-	app.use("/api/upsells", express.json(), applyUpsellRoutes)
-	
+	app.use("/api/carousels", express.json(), applyUpsellRoutes)
+
 	app.get("/api/checkSubscription", async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, app.get("use-online-tokens"))
 
@@ -103,7 +109,7 @@ export async function createServer(
 			shop: session.shop,
 			accessToken: session.accessToken,
 			planName: req.body.planName,
-			returnPath: req.body.returnPath
+			returnPath: req.body.returnPath,
 		})
 
 		return res.send({ redirectionUrl })
@@ -118,7 +124,7 @@ export async function createServer(
 			logger.warn("/api/graphql No query parameter found in request body", { body: req.body })
 			return res.status(500).send("No query parameter found in request body")
 		}
-		
+
 		const session = await Shopify.Utils.loadCurrentSession(req, res, app.get("use-online-tokens"))
 		const shop = session?.shop || req.query.shop
 		let status = 200
@@ -136,7 +142,7 @@ export async function createServer(
 	})
 
 	app.use(express.json())
-	
+
 	applyThemeSupportRoutes(app)
 	app.use("/api/firestore", applyFirestoreRoutes)
 
@@ -177,14 +183,13 @@ export async function createServer(
 	})
 
 	app.use("/*", async (req, res, next) => {
-
 		if (typeof req.query.shop !== "string") {
 			logger.warn("/* No shop parameter found", { reqQuery: req.query })
 			return res.status(500).send("No shop provided. Try opening the app from the apps section of your store.")
 		}
-		
+
 		let shop = req.query.shop
-		
+
 		try {
 			shop = Shopify.Utils.sanitizeShop(req.query.shop)
 		} catch (error) {
@@ -202,7 +207,7 @@ export async function createServer(
 		}
 
 		// host parameter is required for Shopify.Utils.getEmbeddedAppUrl()
-		if (typeof req.query.host !== "string") { 
+		if (typeof req.query.host !== "string") {
 			logger.warn("/* No host parameter provided", { reqQuery: req.query })
 			return res.status(500).send("No host provided. Try opening the app from the apps section of your store.")
 		}
@@ -230,6 +235,8 @@ export async function createServer(
 	return { app }
 }
 
-createServer().then(({ app }) => app.listen(PORT, () => {
-	logger.info(`Running on ${PORT}`)
-}))
+createServer().then(({ app }) =>
+	app.listen(PORT, () => {
+		logger.info(`Running on ${PORT}`)
+	})
+)
