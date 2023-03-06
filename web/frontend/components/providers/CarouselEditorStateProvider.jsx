@@ -24,6 +24,7 @@ export const defaultCarouselEditorState = {
 		itemTextColor: "#fff",
 	},
 	carouselItems: [],
+	itemsPerPage: 2,
 }
 
 export const CarouselEditorStateContext = React.createContext(defaultCarouselEditorState)

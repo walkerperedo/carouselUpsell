@@ -22,7 +22,7 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 					onChange={(value) => setUpsell({ name: value })}
 					helpText="Title of your Upsell that won't be shown to customers"
 				/>
-				{ !upsell.name && <div style={{ color: "#ff3838" }}>Upsell Name cannot be empty</div> }
+				{!upsell.name && <div style={{ color: "#ff3838" }}>Upsell Name cannot be empty</div>}
 			</div>
 			<div style={{ marginTop: "1rem" }}>
 				<TextField
@@ -32,7 +32,17 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 					onChange={(value) => setUpsell({ displayText: value })}
 					helpText="Message that will be displayed next to the checkbox"
 				/>
-				{ !upsell.displayText && <div style={{ color: "#ff3838" }}>Display Message cannot be empty</div> }
+				{!upsell.displayText && <div style={{ color: "#ff3838" }}>Display Message cannot be empty</div>}
+			</div>
+			<div style={{ marginTop: "1rem" }}>
+				<TextField
+					label="Products per page"
+					type="number"
+					max={4}
+					min={2}
+					value={upsell.itemsPerPage}
+					onChange={(value) => setUpsell({ itemsPerPage: value })}
+				/>
 			</div>
 			<div style={{ marginBottom: "1.5rem" }}>
 				<Checkbox
@@ -50,9 +60,9 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 				/>
 			</div>
 
-			<CarouselProductSelector upsell={upsell} setUpsell={setUpsell}/>
+			<CarouselProductSelector upsell={upsell} setUpsell={setUpsell} />
 
-			<ShownForSelector upsell={upsell} setUpsell={setUpsell}/>
+			<ShownForSelector upsell={upsell} setUpsell={setUpsell} />
 		</div>
 	)
 }

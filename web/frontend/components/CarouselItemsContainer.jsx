@@ -1202,7 +1202,7 @@ export const CarouselItemsContainer = (props) => {
 		pauseOnHover: true,
 		resetProgress: false,
 		height: "fit-content",
-		perPage: 3,
+		perPage: upsell.itemsPerPage,
 		arrows: false,
 		drag: true,
 		autoplay: true,
