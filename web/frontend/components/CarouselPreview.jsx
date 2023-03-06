@@ -79,14 +79,7 @@ export const CarouselPreview = ({ upsell }) => {
 						<SkeletonBodyText lines={10} />
 					</div>
 
-					<CarouselItemsContainer
-						upsell={upsell}
-						upsellProductImage={upsellProductImage}
-						loadingUpsellProductImage={loadingUpsellProductImage}
-						upsellProductPrice={upsellProductPrice}
-						upsellProductCompareAtPrice={upsellProductCompareAtPrice}
-						shopCurrency={state.shopCurrency}
-					/>
+					<CarouselItemsContainer shopCurrency={state.shopCurrency} />
 
 					<button
 						style={{

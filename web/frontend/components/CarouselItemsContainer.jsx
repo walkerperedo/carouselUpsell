@@ -1226,7 +1226,7 @@ export const CarouselItemsContainer = (props) => {
 	if (upsell.carouselItems.length < 3) {
 		return null
 	}
-
+	console.log(variantsInfo)
 	return (
 		<>
 			<div className="upsell-label">{upsell.displayText}</div>
@@ -1297,8 +1297,14 @@ export const CarouselItemsContainer = (props) => {
 										</div>
 										<div style={{ paddingBottom: "2rem", paddingLeft: "1.5rem", paddingTop: "1rem" }}>
 											<div style={{ fontWeight: "620" }}>
-												{item.price} {shopCurrency}
+												{getCurrencySymbol(item.price)} {shopCurrency}
 											</div>
+											{upsell.styling.showCompareAtPrice && item.compareAtPrice && (
+												<div style={{ fontWeight: "620" }} className="carousel-compareAtPrice">
+													{getCurrencySymbol(item.compareAtPrice)}
+													{shopCurrency}
+												</div>
+											)}
 											<p>{item.title}</p>
 										</div>
 									</div>

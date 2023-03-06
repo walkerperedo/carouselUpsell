@@ -46,12 +46,11 @@
 	font-weight: 500;
 }
 
-.upsell-compareAtPrice {
+.carousel-compareAtPrice {
 	font-size: 13px;
 	font-weight: 400;
 	text-decoration: line-through;
 	opacity: 0.5;
-	margin-left: 5px;
 }
 
 .upsell-checkbox-image {
