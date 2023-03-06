@@ -25,6 +25,7 @@ export const defaultCarouselEditorState = {
 	},
 	carouselItems: [],
 	itemsPerPage: 2,
+	autoPlay: true,
 }
 
 export const CarouselEditorStateContext = React.createContext(defaultCarouselEditorState)

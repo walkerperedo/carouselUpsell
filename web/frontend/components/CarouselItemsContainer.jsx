@@ -1155,6 +1155,18 @@ export const CarouselItemsContainer = (props) => {
 
 	const { upsell, setUpsell } = useContext(CarouselEditorStateContext)
 	const [variantsInfo, setVariantsInfo] = useState([])
+	const [options, setOptions] = useState({
+		type: "loop",
+		gap: "0.5rem",
+		pauseOnHover: true,
+		resetProgress: false,
+		height: "fit-content",
+		perPage: upsell.itemsPerPage,
+		arrows: false,
+		drag: true,
+		autoplay: upsell.autoPlay,
+		interval: "5000",
+	})
 	const { state } = useContext(GlobalStateContext)
 
 	const gql = useGQL()
@@ -1196,18 +1208,20 @@ export const CarouselItemsContainer = (props) => {
 		}
 	}, [upsell.carouselItems.length])
 
-	const options = {
-		type: "loop",
-		gap: "0.5rem",
-		pauseOnHover: true,
-		resetProgress: false,
-		height: "fit-content",
-		perPage: upsell.itemsPerPage,
-		arrows: false,
-		drag: true,
-		autoplay: true,
-		interval: "1000",
-	}
+	useEffect(() => {
+		setOptions({
+			type: "loop",
+			gap: "0.5rem",
+			pauseOnHover: true,
+			resetProgress: false,
+			height: "fit-content",
+			perPage: upsell.itemsPerPage,
+			arrows: false,
+			drag: true,
+			autoplay: upsell.autoPlay,
+			interval: "3000",
+		})
+	}, [upsell.autoPlay, upsell.itemsPerPage])
 
 	if (upsell.carouselItems.length < 3) {
 		return null
@@ -1296,8 +1310,8 @@ export const CarouselItemsContainer = (props) => {
 					<div className="splide__progress">
 						<div className="splide__progress__bar" />
 					</div>
-
-					{/* <button className="splide__toggle">
+					{/* 
+					<button className="splide__toggle">
 						<span className="splide__toggle__play">Play</span>
 						<span className="splide__toggle__pause">Pause</span>
 					</button> */}
