@@ -3,6 +3,7 @@ import { Icon } from "@shopify/polaris"
 import { CancelSmallMinor } from "@shopify/polaris-icons"
 import React, { useEffect, useState } from "react"
 import { useGQL } from "../hooks/useGQL.js"
+import { buildVariantsQuery } from "../utils/buildVariantsQuery.js"
 import { extractIdNumberFromGid } from "../utils/shopifyGid.js"
 
 export const CarouselProductSelector = ({ upsell, setUpsell }) => {
@@ -42,29 +43,23 @@ export const CarouselProductSelector = ({ upsell, setUpsell }) => {
 	}
 
 	useEffect(async () => {
-		// if (upsell.upsellVariantId && !productToUpsellImage) {
-		// 	const variantRes = await gql(`
-		// 		query {
-		// 			productVariant(id: "gid://shopify/ProductVariant/${upsell.upsellVariantId}") {
-		// 				displayName
-		// 				image {
-		// 					url
-		// 				}
-		// 			}
-		// 		}
-		// 	`)
-		// 	if (variantRes?.data?.productVariant?.image?.url) {
-		// 		setProductToUpsellImage(variantRes.data.productVariant.image.url)
-		// 	} else {
-		// 		setProductToUpsellImage(null)
-		// 	}
-		// 	if (variantRes?.data?.productVariant?.displayName) {
-		// 		setProductToUpsellTitle(variantRes.data.productVariant.displayName)
-		// 	} else {
-		// 		setProductToUpsellTitle(null)
-		// 	}
-		// }
-	}, [upsell.upsellVariantId])
+		if (upsell.carouselItems.length && !carouselItems.length) {
+			const variantRes = await gql(buildVariantsQuery(upsell.carouselItems))
+			if (variantRes?.data) {
+				const variantInfo = Object.keys(variantRes.data).map((key) => {
+					const current = variantRes.data[key]
+					return {
+						title: current.title,
+						price: current.price,
+						compareAtPrice: current.compareAtPrice,
+						image: current?.image?.url,
+						id: extractIdNumberFromGid(current.id),
+					}
+				})
+				setCarouselItems(variantInfo)
+			}
+		}
+	}, [upsell.carouselItems.length])
 
 	return (
 		<div style={{ borderTop: "1px solid #ccc", paddingTop: "1.5rem", marginBottom: "1.5rem" }}>

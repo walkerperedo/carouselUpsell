@@ -8,6 +8,7 @@ import "@splidejs/react-splide/css"
 import { useGQL } from "../hooks/useGQL"
 import { extractIdNumberFromGid } from "../utils/shopifyGid"
 import { NoteMinor } from "@shopify/polaris-icons"
+import { buildVariantsQuery } from "../utils/buildVariantsQuery"
 
 const currencyCodeMap = {
 	AED: {
@@ -1170,26 +1171,6 @@ export const CarouselItemsContainer = (props) => {
 	const { state } = useContext(GlobalStateContext)
 
 	const gql = useGQL()
-
-	const buildVariantsQuery = (ids) => {
-		let query = "query {"
-
-		ids.map((id, i) => {
-			query += `
-			productVariant${i + 1}: productVariant(id: "gid://shopify/ProductVariant/${id}") {
-				title
-				image {
-					url
-				}
-				price
-				compareAtPrice
-				id
-			  }
-			`
-		})
-		query += "}"
-		return query
-	}
 
 	useEffect(async () => {
 		if (upsell.carouselItems.length >= 3) {
