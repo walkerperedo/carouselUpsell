@@ -1,0 +1,12 @@
+{% assign productId = product.id %}
+
+<div id="carouselAppBlock-container" productid="{{productId}}"></div>
+
+{% schema %}
+  {
+    "name": "Carousel",
+    "target": "body",
+    "javascript": "carouselAppBlock.js",
+    "settings": []
+  }
+{% endschema %}

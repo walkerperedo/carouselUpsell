@@ -5,7 +5,7 @@ import {
 	getAllStoreUpsells,
 	getNumberOfUpsellsCreated,
 	getUpsellById,
-	getUpsells,
+	getCarousel,
 	updatePreferredCarouselPositioning,
 	updateUpsell,
 	updateUpsellStats,
@@ -89,15 +89,16 @@ router.post("/updateUpsellStats", async (req, res) => {
 	}
 })
 
-router.get("/getUpsells/:productId", async (req, res) => {
+router.put("/getCarousel/:productId", async (req, res) => {
 	// apicache.middleware("24 hours", onlyStatus200),
 
 	try {
-		const upsells = await getUpsells(req.params.productId, req.query.store || "")
-		logger.info("/getUpsells upsells retrieved", upsells.length)
-		return res.status(200).send({ upsells })
+		const carousel = await getCarousel(req.params.productId, req.query.store || "")
+		logger.info("/getCarousel carousel retrieved", carousel.length)
+
+		return res.status(200).send({ carousel })
 	} catch (error) {
-		logger.warn("/getUpsells catched error", { error })
+		logger.warn("/getCarousel catched error", { error })
 		return res.status(500).send({ error: error.message })
 	}
 })

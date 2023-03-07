@@ -19,7 +19,7 @@ import {
 import applyAuthMiddleware from "./middleware/auth.js"
 import verifyRequest from "./middleware/verify-request.js"
 import applyThemeSupportRoutes from "./routes/themeSupportRoutes.js"
-import applyUpsellRoutes from "./routes/upsellRoutes.js"
+import applyCarouselRoutes from "./routes/carouselRoutes.js"
 import applyFirestoreRoutes from "./routes/firestore.js"
 import { logger } from "./utils/logger.js"
 import { BillingInterval } from "./helpers/ensure-billing.js"
@@ -84,7 +84,7 @@ export async function createServer(
 
 	app.use("/api/*", cors())
 
-	app.use("/api/carousels", express.json(), applyUpsellRoutes)
+	app.use("/api/carousels", express.json(), applyCarouselRoutes)
 
 	app.get("/api/checkSubscription", async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, app.get("use-online-tokens"))
@@ -172,8 +172,8 @@ export async function createServer(
 		app.use(serveStatic(PROD_INDEX_PATH, { index: false }))
 	}
 
-	app.get("/justUpsellScript.js", (req, res) => {
-		const jsFile = join(`${process.cwd()}/frontend/`, "justUpsellScript.js")
+	app.get("/carouselScript.js", (req, res) => {
+		const jsFile = join(`${process.cwd()}/frontend/`, "carouselScript.js")
 		return res.status(200).set("Content-Type", "text/javascript").send(readFileSync(jsFile))
 	})
 

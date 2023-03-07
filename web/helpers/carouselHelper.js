@@ -166,10 +166,10 @@ export const getUpsellVariantMetadataFromShopify = async (store, variantId, upse
 	}
 }
 
-export const getUpsells = async (productId, store) => {
+export const getCarousel = async (productId, store) => {
 	const upsellsToReturn = []
 	const metadataPromisesArr = []
-	let upsells = []
+	let carouselArr = []
 
 	const globalUpsells = db.collection("carousels").where("store", "==", store).where("shownFor", "array-contains", "*").get()
 	const shownForUpsells = db.collection("carousels").where("shownFor", "array-contains", productId).get()
@@ -177,27 +177,26 @@ export const getUpsells = async (productId, store) => {
 	await Promise.allSettled([globalUpsells, shownForUpsells]).then((responses) => {
 		responses.map((res) => {
 			if (res.value) {
-				res.value.docs.map((upsell) => {
-					upsells.push({ id: upsell.id, ...upsell.data() })
+				res.value.docs.map((carousel) => {
+					carouselArr.push({ id: carousel.id, ...carousel.data() })
 				})
 			}
 		})
 	})
+	if (carouselArr.length === 0) return []
 
-	if (upsells.length === 0) return []
-
-	for (const upsell of upsells) {
-		if (upsell.published && upsell.store && upsell.upsellVariantId) {
-			const productMetadataPromise = getUpsellVariantMetadataFromShopify(upsell.store, upsell.upsellVariantId, {
-				id: upsell.id,
-				autoCheck: upsell.autoCheck,
-				displayText: upsell.displayText,
-				positioning: upsell.positioning,
-				priority: upsell.priority,
-				styling: upsell.styling,
-				upsellProductId: upsell.upsellProductId,
-				upsellVariantId: upsell.upsellVariantId,
-				seeMoreEnabled: upsell.seeMoreEnabled,
+	for (const carousel of carouselArr) {
+		if (carousel.published && carousel.store && carousel.carouselItems.length) {
+			const productMetadataPromise = getUpsellVariantMetadataFromShopify(carousel.store, carousel.upsellVariantId, {
+				id: carousel.id,
+				autoCheck: carousel.autoCheck,
+				displayText: carousel.displayText,
+				positioning: carousel.positioning,
+				priority: carousel.priority,
+				styling: carousel.styling,
+				upsellProductId: carousel.upsellProductId,
+				upsellVariantId: carousel.upsellVariantId,
+				seeMoreEnabled: carousel.seeMoreEnabled,
 			})
 
 			if (productMetadataPromise) {
