@@ -14,7 +14,6 @@ export const defaultCarouselEditorState = {
 		views: 0,
 	},
 	styling: {
-		showImage: false,
 		showCompareAtPrice: false,
 		itemBorderRadius: "",
 		itemBorderColor: "",
@@ -25,7 +24,7 @@ export const defaultCarouselEditorState = {
 	},
 	carouselItems: [],
 	itemsPerPage: 2,
-	autoPlay: true,
+	autoPlay: false,
 }
 
 export const CarouselEditorStateContext = React.createContext(defaultCarouselEditorState)

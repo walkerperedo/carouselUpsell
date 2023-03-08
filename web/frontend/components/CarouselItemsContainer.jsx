@@ -8,7 +8,7 @@ import "@splidejs/react-splide/css"
 import { useGQL } from "../hooks/useGQL"
 import { extractIdNumberFromGid } from "../utils/shopifyGid"
 import { NoteMinor } from "@shopify/polaris-icons"
-import { buildVariantsQuery } from "../utils/buildVariantsQuery"
+import { buildProductVariantQuery, buildVariantsQuery } from "../utils/buildVariantsQuery"
 
 const currencyCodeMap = {
 	AED: {
@@ -1168,43 +1168,42 @@ export const CarouselItemsContainer = (props) => {
 		autoplay: upsell.autoPlay,
 		interval: "5000",
 	})
-	const { state } = useContext(GlobalStateContext)
 
 	const gql = useGQL()
 
 	useEffect(async () => {
-		if (upsell.carouselItems.length >= 3) {
-			const variantRes = await gql(buildVariantsQuery(upsell.carouselItems))
+		if (upsell.carouselItems.length >= 2) {
+			const variantRes = await gql(buildProductVariantQuery(upsell.carouselItems))
 			const variantInfo = Object.keys(variantRes.data).map((key) => {
 				const current = variantRes.data[key]
 				return {
-					title: current.title,
-					price: current.price,
-					compareAtPrice: current.compareAtPrice,
-					image: current?.image?.url,
-					id: extractIdNumberFromGid(current.id),
+					title: current?.variants?.nodes[0]?.displayName,
+					price: current?.variants?.nodes[0]?.price,
+					compareAtPrice: current?.variants?.nodes[0]?.compareAtPrice,
+					image: current?.variants?.nodes[0]?.image?.url,
+					id: extractIdNumberFromGid(current?.variants?.nodes[0]?.id),
 				}
 			})
 			setVariantsInfo(variantInfo)
 		}
 	}, [upsell.carouselItems.length])
 
-	useEffect(() => {
-		setOptions({
-			type: "loop",
-			gap: "0.5rem",
-			pauseOnHover: true,
-			resetProgress: false,
-			height: "fit-content",
-			perPage: upsell.itemsPerPage,
-			arrows: false,
-			drag: true,
-			autoplay: upsell.autoPlay,
-			interval: "3000",
-		})
-	}, [upsell.autoPlay, upsell.itemsPerPage])
+	// useEffect(() => {
+	// 	setOptions({
+	// 		type: "loop",
+	// 		gap: "0.5rem",
+	// 		pauseOnHover: true,
+	// 		resetProgress: false,
+	// 		height: "fit-content",
+	// 		perPage: upsell.itemsPerPage,
+	// 		arrows: false,
+	// 		drag: true,
+	// 		autoplay: upsell.autoPlay,
+	// 		interval: "3000",
+	// 	})
+	// }, [upsell.autoPlay, upsell.itemsPerPage])
 
-	if (upsell.carouselItems.length < 3) {
+	if (upsell.carouselItems.length < 2) {
 		return null
 	}
 

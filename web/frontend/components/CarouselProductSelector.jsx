@@ -3,7 +3,7 @@ import { Icon } from "@shopify/polaris"
 import { CancelSmallMinor } from "@shopify/polaris-icons"
 import React, { useEffect, useState } from "react"
 import { useGQL } from "../hooks/useGQL.js"
-import { buildVariantsQuery } from "../utils/buildVariantsQuery.js"
+import { buildProductVariantQuery, buildVariantsQuery } from "../utils/buildVariantsQuery.js"
 import { extractIdNumberFromGid } from "../utils/shopifyGid.js"
 
 export const CarouselProductSelector = ({ upsell, setUpsell }) => {
@@ -14,14 +14,16 @@ export const CarouselProductSelector = ({ upsell, setUpsell }) => {
 	const [noProductsMessage, setNoProductsMessage] = useState("Select Carousel Products")
 
 	const handleSelection = (resources) => {
-		if (resources.selection.length < 3) {
-			setNoProductsMessage("Please select at least three products")
+		if (resources.selection.length < 2) {
+			setCarouselItems([])
+			setUpsell({ carouselItems: [] })
+			setNoProductsMessage("Please select at least two products")
 		} else {
 			const newItems = resources.selection.map((resource) => {
 				return {
 					id: extractIdNumberFromGid(resource.id),
-					title: resource.displayName,
-					image: resource.image?.originalSrc || "",
+					title: resource.title,
+					image: resource.images.length ? resource.images[0]?.originalSrc : "",
 				}
 			})
 
@@ -35,25 +37,31 @@ export const CarouselProductSelector = ({ upsell, setUpsell }) => {
 	}
 
 	const deleteSelection = (id) => {
-		const newItems = upsell.carouselItems.filter((variantId) => variantId !== id)
-		const newCarouselItems = carouselItems.filter((item) => item.id !== id)
+		if (carouselItems.length < 3) {
+			setCarouselItems([])
+			setUpsell({ carouselItems: [] })
+			setNoProductsMessage("Please select at least two products")
+		} else {
+			const newItems = upsell.carouselItems.filter((variantId) => variantId !== id)
+			const newCarouselItems = carouselItems.filter((item) => item.id !== id)
 
-		setUpsell({ carouselItems: newItems })
-		setCarouselItems(newCarouselItems)
+			setUpsell({ carouselItems: newItems })
+			setCarouselItems(newCarouselItems)
+		}
 	}
 
 	useEffect(async () => {
 		if (upsell.carouselItems.length && !carouselItems.length) {
-			const variantRes = await gql(buildVariantsQuery(upsell.carouselItems))
+			const variantRes = await gql(buildProductVariantQuery(upsell.carouselItems))
 			if (variantRes?.data) {
 				const variantInfo = Object.keys(variantRes.data).map((key) => {
 					const current = variantRes.data[key]
 					return {
-						title: current.title,
-						price: current.price,
-						compareAtPrice: current.compareAtPrice,
-						image: current?.image?.url,
-						id: extractIdNumberFromGid(current.id),
+						title: current?.variants?.nodes[0]?.displayName,
+						price: current?.variants?.nodes[0]?.price,
+						compareAtPrice: current?.variants?.nodes[0]?.compareAtPrice,
+						image: current?.variants?.nodes[0]?.image?.url,
+						id: extractIdNumberFromGid(current?.variants?.nodes[0]?.id),
 					}
 				})
 				setCarouselItems(variantInfo)
@@ -106,8 +114,8 @@ export const CarouselProductSelector = ({ upsell, setUpsell }) => {
 			)}
 
 			<ResourcePicker
-				resourceType={"ProductVariant"}
-				showVariants={true}
+				resourceType={"Product"}
+				showVariants={false}
 				open={open}
 				selectMultiple={true}
 				onCancel={() => setOpen(false)}

@@ -47,13 +47,6 @@ export const CarouselSettings = ({ upsell, setUpsell }) => {
 			<div style={{ marginBottom: "1.5rem", marginTop: "1rem" }}>
 				<Checkbox label="Auto play" checked={upsell.autoPlay} onChange={(value) => setUpsell({ autoPlay: value })} />
 			</div>
-			<div style={{ marginBottom: "1.5rem" }}>
-				<Checkbox
-					label="Show product image"
-					checked={upsell.styling.showImage}
-					onChange={(value) => setUpsell({ styling: { ...upsell.styling, showImage: value } })}
-				/>
-			</div>
 
 			<div style={{ marginBottom: "1.5rem" }}>
 				<Checkbox
