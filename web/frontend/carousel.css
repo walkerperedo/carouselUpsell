@@ -131,9 +131,6 @@
 	overflow: hidden;
 }
 
-.upsell-modal-image-container {
-}
-
 .upsell-modal-image {
 	border-radius: 10px;
 	width: 100%;
@@ -172,6 +169,57 @@
 
 .upsell-button-charging {
 	cursor: wait;
+}
+
+/* carousel */
+.card-carousel-container {
+	background-color: white;
+	box-shadow: 0px 5px 5px #dedcdc;
+	border-radius: 1rem;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 2rem;
+	height: 13rem;
+}
+
+.carousel-img-container {
+	background-color: #e4e5e7;
+	width: 100%;
+	display: flex;
+	min-height: 5rem;
+	max-height: 5rem;
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem;
+}
+
+.carousel-img {
+	width: fit-content;
+	margin: auto;
+	height: 100%;
+	object-fit: cover;
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem;
+}
+
+.carousel-noImg-icon {
+	font-size: 2rem;
+	align-self: center;
+	margin: auto;
+}
+
+.add-icon {
+	width: fit-content;
+	position: absolute;
+	top: 4.4rem;
+	right: 1rem;
+	font-size: 1.5rem;
+	border-radius: 25px;
+	background-color: white;
+	box-shadow: #ebebeb 0px 2px 5px 2px;
+}
+
+.mdi-check-circle::before {
+	color: green;
 }
 
 @media only screen and (max-width: 800px) {
@@ -225,116 +273,6 @@
 	#upsell-modal-addToCart-button-container {
 		margin-top: auto !important;
 	}
-}
-
-/* Pretty Checkbox overrides */
-
-/* Prevent overflow */
-.pretty {
-	width: 100% !important;
-	overflow: hidden !important;
-	margin-right: 0px !important;
-	padding-top: 2px !important;
-	padding-bottom: 2px !important;
-}
-
-/* Fix aligment of checkbox */
-.pretty .state::before {
-	top: 0px !important;
-}
-
-/* Fix checkbox alignment when using flex */
-.pretty .state label::after,
-.pretty .state label::before {
-	top: 1px !important;
-	height: 18px !important;
-	width: 18px !important;
-}
-
-.pretty.p-icon .state .icon {
-	top: 1px !important;
-	width: 18px !important;
-	height: 18px !important;
-}
-
-/* Fix switch checkbox types */
-.pretty.pretty.p-switch {
-	padding-top: 5px !important;
-}
-
-.pretty.p-switch .state label::before,
-.pretty.p-switch .state label::after {
-	top: 0.5px !important;
-}
-
-.pretty.p-switch.p-slim .state::before {
-	top: calc(50% - 0.1rem) !important;
-}
-
-/* Pretty Checkbox Box */
-.pretty.p-default input:checked ~ .state.custom-color label::before {
-	background-color: var(--custom-checkbox-color) !important;
-}
-
-.pretty.p-default input:checked ~ .state.custom-color label::after {
-	background-color: var(--custom-checkmark-color) !important;
-}
-
-/* Pretty Checkbox switchOutline */
-.pretty.p-switch input:checked ~ .state.custom-color::before {
-	border-color: var(--custom-checkbox-color) !important;
-}
-
-.pretty.p-switch input:checked ~ .state.custom-color label::after {
-	background-color: var(--custom-checkmark-color) !important;
-}
-
-/* Pretty Checkbox switchFill */
-.pretty.p-switch.p-fill input:checked ~ .state.custom-color::before {
-	background-color: var(--custom-checkbox-color) !important;
-}
-
-.pretty.p-switch.p-fill input:checked ~ .state.custom-color label::after {
-	background-color: var(--custom-checkmark-color) !important;
-}
-
-/* Pretty Checkbox switchOutline */
-.pretty.p-switch.p-slim input:checked ~ .state.custom-color::before {
-	background-color: var(--custom-checkbox-color) !important;
-	border-color: var(--custom-checkbox-color) !important;
-}
-
-.pretty.p-switch.p-slim input:checked ~ .state.custom-color label::after {
-	background-color: var(--custom-checkmark-color) !important;
-}
-
-/* Pretty Checkbox custom icon with preset color */
-.pretty.p-icon .state:not(.custom-color) .icon::before {
-	color: unset !important;
-	background: unset !important;
-}
-
-/* Pretty Checkbox custom icon with custom color */
-.pretty.p-icon input:checked ~ .state.custom-color i {
-	border: none !important;
-}
-
-.pretty.p-icon input:checked ~ .state.custom-color i::before {
-	background-color: var(--custom-checkbox-color) !important;
-	color: var(--custom-checkmark-color);
-}
-
-/* Pretty Checkbox fix border radius for custom icon with custom color */
-.pretty.p-icon.p-curve input:checked ~ .state.custom-color i::before {
-	border-radius: 20% !important;
-}
-
-/* Pretty Checkbox fix aligment for custom icon with custom color with rounded border */
-.pretty.p-icon.p-round input:checked ~ .state.custom-color i::before {
-	width: 150% !important;
-	height: 150% !important;
-	margin-top: -5px !important;
-	margin-left: -5px !important;
 }
 
 /* Skeleton Loader */
