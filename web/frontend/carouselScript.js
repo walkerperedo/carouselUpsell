@@ -1,4 +1,4 @@
-const apiHost = "https://34ee-181-177-182-31.sa.ngrok.io"
+const apiHost = "https://950f-132-251-254-148.sa.ngrok.io"
 const currencyCodeMap = {
 	AED: {
 		symbol: "AED",
@@ -1158,7 +1158,7 @@ async function getCarousel(productId, store) {
 			if (json.error) {
 				console.error(json.error)
 			} else {
-				return json.upsells
+				return json.carousel
 			}
 		})
 }
@@ -1177,14 +1177,14 @@ function onUpsellChecked(e) {
 	}
 }
 
-function insertUpsell(upsellElement, positioning) {
+function insertCarousel(carouselElement, positioning) {
 	const isCustom = !positioning.includes("$ADD_TO_CART$")
 	const customSelector = isCustom ? /\((.*)\)/.exec(positioning)?.[1] || "" : null
 	const customSelectorElement = isCustom ? document.querySelector(customSelector) : null
 	const beforeOrAfter = positioning?.split("(")?.[0] || "before"
 	const elementToInsertTo = isCustom ? customSelectorElement || addToCartBtn : addToCartBtn
 
-	elementToInsertTo.insertAdjacentElement(beforeOrAfter === "before" ? "beforebegin" : "afterend", upsellElement)
+	elementToInsertTo.insertAdjacentElement(beforeOrAfter === "before" ? "beforebegin" : "afterend", carouselElement)
 }
 
 function insertCustomCss(css) {
@@ -1199,150 +1199,208 @@ function getCurrencySymbol(currencyCode) {
 	return currencyCodeMap[currencyCode]?.symbol || currencyCode
 }
 
-function renderUpsells(upsells) {
-	function generatePrettyCheckboxClasses(styling) {
-		const classes = ["pretty"]
+function create({ tag, appendTo, children = [], attributes = {}, events = {} }) {
+	const element = document.createElement(tag)
 
-		switch (styling.checkboxType) {
-			case "box":
-				if (styling.checkmarkIcon !== "default") {
-					classes.push("p-icon")
-				} else {
-					classes.push("p-default")
-				}
-				break
-			case "switchOutline":
-				classes.push("p-switch")
-				break
-			case "switchFill":
-				classes.push("p-switch")
-				classes.push("p-fill")
-				break
-			case "switchSlim":
-				classes.push("p-switch")
-				classes.push("p-slim")
-				break
-			default:
-				break
-		}
+	Object.entries(attributes).forEach(([key, value]) => {
+		element[key] = value
+	})
 
-		switch (styling.borderType) {
-			case "squared":
-				break
-			case "curved":
-				classes.push("p-curve")
-				break
-			case "round":
-				classes.push("p-round")
-				break
-			default:
-				break
-		}
+	Object.entries(events).forEach(([key, value]) => {
+		element.addEventListener(key, value)
+	})
 
-		switch (styling.checkmarkType) {
-			case "default":
-				break
-			case "fill":
-				classes.push("p-fill")
-				break
-			case "thick":
-				classes.push("p-thick")
-				break
-			default:
-				break
-		}
-
-		return classes.join(" ")
+	if (appendTo) {
+		appendTo.appendChild(element)
 	}
 
-	function generatePrettyCheckmarkColor(styling) {
-		if (styling.colorType === "preset") {
-			return "state p-" + styling.presetColor
+	children.forEach((child) => element.appendChild(child))
+
+	return element
+}
+
+const createSelector = (item, carouselContainer) => {
+	const selectorContainer = create({ tag: "div", attributes: { classList: "carousel-selector-container" } })
+	const selector = create({ tag: "select", attributes: { id: "variantIdSelector", classList: "carousel-select" } })
+
+	item.map((variant) => {
+		const option = create({ tag: "option", attributes: { id: variant.id, innerText: variant.variantName } })
+		selector.appendChild(option)
+	})
+
+	selectorContainer.appendChild(selector)
+	carouselContainer.appendChild(selectorContainer)
+}
+
+function renderItem(item, ul, carousel) {
+	let checkedIcon = false
+	const li = create({ tag: "li", attributes: { classList: "splide__slide" } })
+	const cardCarouselContainer = create({ tag: "div", attributes: { classList: "card-carousel-container" } })
+	const imgContainer = create({ tag: "div", attributes: { classList: "carousel-img-container" } })
+	const img = item[0].image
+		? create({ tag: "img", attributes: { src: item[0].image, alt: item[0].variantName, classList: "carousel-img" } })
+		: create({ tag: "span", attributes: { classList: "mdi mdi-image-area carousel-noImg-icon" } })
+	const iconContainer = create({ tag: "div", attributes: { style: "cursor:pointer", id: "icon-container" } })
+	const addIcon = create({
+		tag: "span",
+		attributes: { classList: "mdi mdi-plus add-icon store-icon" },
+	})
+	const checkCircle = create({
+		tag: "span",
+		attributes: { classList: "mdi mdi-check-circle add-icon store-icon" },
+	})
+
+	iconContainer.addEventListener("click", () => {
+		checkedIcon = !checkedIcon
+		if (checkedIcon) {
+			iconContainer.replaceChild(checkCircle, iconContainer.childNodes[0])
 		} else {
-			return "state custom-color"
-		}
-	}
-
-	function generatePrettyCheckboxStyle(styling) {
-		return `
-			${styling.colorType === "custom" ? `--custom-checkbox-color: ${styling.customCheckboxColor};` : ""}
-			${styling.colorType === "custom" ? `--custom-checkmark-color: ${styling.customCheckmarkColor};` : ""}
-		`
-	}
-
-	const sortedUpsells = upsells.sort((a, b) => {
-		if (a.priority < b.priority) {
-			return -1
-		} else if (a.priority > b.priority) {
-			return 1
-		} else {
-			return 0
+			iconContainer.replaceChild(addIcon, iconContainer.childNodes[0])
 		}
 	})
 
-	for (let i = 0; i < sortedUpsells.length; i++) {
-		const upsell = sortedUpsells[i]
-		const upsellElement = document.createElement("div")
+	const contentContainer = create({ tag: "div", attributes: { style: "padding-left: 1rem; padding-top: 1rem" } })
+	const variantTitle = create({
+		tag: "p",
+		attributes: { style: "font-weight: 620; font-size: 1.3rem; margin: 0", textContent: item[0].variantName },
+	})
 
-		upsellElement.className = `upsell-checkbox-container ${upsell.styling.showImage ? "upsell-showImage" : ""} ${
-			upsell.styling.showCompareAtPrice ? "upsell-showCompareAtPrice" : ""
-		}`
-		upsellElement.id = `justUpsell-${upsell.id}`
+	const priceContainer = create({
+		tag: "div",
+		attributes: {
+			style: "display: flex; justify-content: space-between; width: 90%; font-size: 1rem",
+			textContent: `${item[0].price} ${getCurrencySymbol(currencyCode)}`,
+		},
+	})
 
-		upsellElement.innerHTML = `
-			<div class="${generatePrettyCheckboxClasses(upsell.styling)}">
-				<input type="checkbox" title="${upsell.displayText || ""}" data-upsellid="${upsell.id}" data-upsellvariantid="${upsell.upsellVariantId}" ${
-			upsell.autoCheck ? "checked" : ""
-		} ${!upsell.availableForSale ? "disabled" : ""}/>
-
-				<div class="upsell-checkmark-container ${generatePrettyCheckmarkColor(upsell.styling)}" style="${generatePrettyCheckboxStyle(
-			upsell.styling
-		)}">
-					${upsell.styling.checkmarkIcon !== "default" ? `<i class="icon mdi mdi-${upsell.styling.checkmarkIcon}"></i>` : ""}
-
-					<label class="upsell-label">${upsell.displayText || "."}</label>
-
-					<div class="upsell-price-container">
-						${upsell.price ? `<span class="upsell-price">${getCurrencySymbol(currencyCode)}${upsell.price}</span>` : ""}
-	
-						${
-							upsell.styling.showCompareAtPrice && upsell.compareAtPrice
-								? `<span class="upsell-compareAtPrice">${getCurrencySymbol(currencyCode)}${upsell.compareAtPrice}</span>`
-								: ""
-						}
-					</div>
-				</div>
-			</div>
-			
-			${upsell.seeMoreEnabled ? `<span class="upsell-seeMore-button" style="${generatePrettyCheckboxStyle(upsell.styling)}">See more</span>` : ""}
-
-			${upsell.styling.showImage && upsell.image ? `<img class="upsell-checkbox-image neu-shadow" src="${upsell.image}"/>` : ""}
-		`
-
-		if (i === 0) {
-			upsellElement.style = "margin-top: 10px;"
-		} else if (i === upsells.length - 1) {
-			upsellElement.style = "margin-bottom: 10px;"
-		}
-
-		upsellElement.querySelector("input").onclick = onUpsellChecked
-
-		insertUpsell(upsellElement, upsell.positioning)
-
-		if (upsellElement.querySelector(".upsell-seeMore-button")) {
-			upsellElement.querySelector(".upsell-seeMore-button").onclick = () => showModal(upsell, upsellElement)
-		}
-
-		if (upsell.autoCheck && upsell.availableForSale) {
-			variantIdsToAddToCart.push(upsell.upsellVariantId)
-			checkedUpsellIds.push(upsell.id)
-		}
-		updateUpsellStats(upsell.id, "views", 1)
-
-		if (upsell.styling.customCss) {
-			insertCustomCss(upsell.styling.customCss)
-		}
+	if (carousel.styling.showCompareAtPrice && item[0].compareAtPrice) {
+		const compareAtPrice = create({
+			tag: "span",
+			attributes: {
+				style: "font-weight: 620; font-size: 1rem",
+				classList: "carousel-compareAtPrice",
+				textContent: `${item[0].compareAtPrice} ${getCurrencySymbol(currencyCode)}`,
+			},
+		})
+		priceContainer.appendChild(compareAtPrice)
 	}
+
+	contentContainer.appendChild(variantTitle)
+	contentContainer.appendChild(priceContainer)
+
+	iconContainer.appendChild(addIcon)
+
+	li.appendChild(cardCarouselContainer)
+	cardCarouselContainer.appendChild(imgContainer)
+	imgContainer.appendChild(img)
+	cardCarouselContainer.appendChild(iconContainer)
+	cardCarouselContainer.appendChild(contentContainer)
+	createSelector(item, cardCarouselContainer)
+
+	ul.appendChild(li)
+}
+
+function renderCarousel(carousel) {
+	const carouselElement = document.createElement("div")
+	console.log(carousel)
+
+	const displayText = create({ tag: "div", attributes: { classList: "upsell-label", textContent: carousel.displayText } })
+
+	const principalContainer = create({ tag: "div", attributes: { style: "max-width:100%" } })
+
+	const section = create({
+		tag: "section",
+		attributes: { classList: "splide" },
+	})
+
+	section.setAttribute("aria-labelledby", "autoplay-example-heading")
+	section.setAttribute("hasTrack", false)
+
+	const innerContainer = create({ tag: "div", attributes: { style: "position:relative" } })
+	const splideTrack = create({ tag: "div", attributes: { classList: "splide__track" } })
+	const ul = create({ tag: "ul", attributes: { classList: "splide__list", style: "transform: none" } })
+
+	splideTrack.appendChild(ul)
+
+	carousel.carouselItems.map((item) => {
+		renderItem(item, ul, carousel)
+	})
+
+	innerContainer.appendChild(splideTrack)
+
+	section.appendChild(innerContainer)
+
+	principalContainer.appendChild(section)
+
+	carouselElement.appendChild(displayText)
+	carouselElement.appendChild(principalContainer)
+
+	console.log(carouselElement)
+
+	// carouselElement.innerHTML = `
+	// <div style="max-width:100%">
+	// 	<section class="splide" aria-labelledby="autoplay-example-heading" hasTrack={false}>
+	// 		<div style="position:relative">
+	// 			<div class="splide__track">
+	// 				<ul class="splide__list" style="transform:none">
+	// 					${renderCarouselItems(carousel.carouselItems)}
+	// 				</ul>
+	// 			</div>
+	// 		</div>
+	// 	</section>
+	// </div>
+	// `
+	insertCarousel(carouselElement, carousel.positioning)
+
+	// for (let i = 0; i < sortedUpsells.length; i++) {
+	// 	const upsell = sortedUpsells[i]
+	// 	const upsellElement = document.createElement("div")
+	// 	upsellElement.className = `upsell-checkbox-container ${upsell.styling.showImage ? "upsell-showImage" : ""} ${
+	// 		upsell.styling.showCompareAtPrice ? "upsell-showCompareAtPrice" : ""
+	// 	}`
+	// 	upsellElement.id = `justUpsell-${upsell.id}`
+	// 	upsellElement.innerHTML = `
+	// 		<div class="${generatePrettyCheckboxClasses(upsell.styling)}">
+	// 			<input type="checkbox" title="${upsell.displayText || ""}" data-upsellid="${upsell.id}" data-upsellvariantid="${upsell.upsellVariantId}" ${
+	// 		upsell.autoCheck ? "checked" : ""
+	// 	} ${!upsell.availableForSale ? "disabled" : ""}/>
+	// 			<div class="upsell-checkmark-container ${generatePrettyCheckmarkColor(upsell.styling)}" style="${generatePrettyCheckboxStyle(
+	// 		upsell.styling
+	// 	)}">
+	// 				${upsell.styling.checkmarkIcon !== "default" ? `<i class="icon mdi mdi-${upsell.styling.checkmarkIcon}"></i>` : ""}
+	// 				<label class="upsell-label">${upsell.displayText || "."}</label>
+	// 				<div class="upsell-price-container">
+	// 					${upsell.price ? `<span class="upsell-price">${getCurrencySymbol(currencyCode)}${upsell.price}</span>` : ""}
+	// 					${
+	// 						upsell.styling.showCompareAtPrice && upsell.compareAtPrice
+	// 							? `<span class="upsell-compareAtPrice">${getCurrencySymbol(currencyCode)}${upsell.compareAtPrice}</span>`
+	// 							: ""
+	// 					}
+	// 				</div>
+	// 			</div>
+	// 		</div>
+	// 		${upsell.seeMoreEnabled ? `<span class="upsell-seeMore-button" style="${generatePrettyCheckboxStyle(upsell.styling)}">See more</span>` : ""}
+	// 		${upsell.styling.showImage && upsell.image ? `<img class="upsell-checkbox-image neu-shadow" src="${upsell.image}"/>` : ""}
+	// 	`
+	// 	if (i === 0) {
+	// 		upsellElement.style = "margin-top: 10px;"
+	// 	} else if (i === carousel.length - 1) {
+	// 		upsellElement.style = "margin-bottom: 10px;"
+	// 	}
+	// 	upsellElement.querySelector("input").onclick = onUpsellChecked
+	// 	insertUpsell(upsellElement, upsell.positioning)
+	// 	if (upsellElement.querySelector(".upsell-seeMore-button")) {
+	// 		upsellElement.querySelector(".upsell-seeMore-button").onclick = () => showModal(upsell, upsellElement)
+	// 	}
+	// 	if (upsell.autoCheck && upsell.availableForSale) {
+	// 		variantIdsToAddToCart.push(upsell.upsellVariantId)
+	// 		checkedUpsellIds.push(upsell.id)
+	// 	}
+	// 	updateUpsellStats(upsell.id, "views", 1)
+	// 	if (upsell.styling.customCss) {
+	// 		insertCustomCss(upsell.styling.customCss)
+	// 	}
+	// }
 }
 
 async function onAddToCartClicked(e) {
@@ -1464,11 +1522,6 @@ async function initCarousel() {
 		justUpsellStyles.href = `${apiHost}/checkbox.css`
 		document.body.append(justUpsellStyles)
 
-		const prettyCheckbox = document.createElement("link")
-		prettyCheckbox.rel = "stylesheet"
-		prettyCheckbox.href = "https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"
-		document.body.append(prettyCheckbox)
-
 		const materialDesignIcons = document.createElement("link")
 		materialDesignIcons.rel = "stylesheet"
 		materialDesignIcons.href = "https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css"
@@ -1495,13 +1548,26 @@ async function initCarousel() {
 		fetchedCarousel = carousel
 		skeletonLoaderElement.remove()
 
-		if (carousel?.length) {
-			renderUpsells(carousel)
+		if (carousel) {
+			renderCarousel(carousel)
 		}
 
 		if (!addToCartButton.disabled) {
 			addToCartButton.addEventListener("click", onAddToCartClicked, { once: true })
 		}
+
+		new Splide(".splide", {
+			type: "loop",
+			gap: "0.5rem",
+			pauseOnHover: true,
+			resetProgress: false,
+			height: "fit-content",
+			perPage: 3,
+			arrows: false,
+			drag: true,
+			autoplay: false,
+			interval: "5000",
+		}).mount()
 	}
 }
 

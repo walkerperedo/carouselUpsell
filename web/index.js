@@ -177,8 +177,8 @@ export async function createServer(
 		return res.status(200).set("Content-Type", "text/javascript").send(readFileSync(jsFile))
 	})
 
-	app.get("/checkbox.css", (req, res) => {
-		const cssFile = join(`${process.cwd()}/frontend/`, "checkbox.css")
+	app.get("/carousel.css", (req, res) => {
+		const cssFile = join(`${process.cwd()}/frontend/`, "carousel.css")
 		return res.status(200).set("Content-Type", "text/css").send(readFileSync(cssFile))
 	})
 

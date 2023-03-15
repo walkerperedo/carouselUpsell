@@ -114,55 +114,62 @@ export const updateShownForByAssociatedCollectionIds = async (shop, updatedColle
 	}
 }
 
-export const getUpsellVariantMetadataFromShopify = async (store, variantId, upsellToReturn) => {
+export const buildProductVariantQuery = (ids) => {
+	let query = "query {"
+
+	ids.map((id, i) => {
+		query += `
+      product${i + 1}: product(id: "gid://shopify/Product/${id}") {
+		title
+        variants(first: 30) {
+          nodes{
+			availableForSale
+            id
+            price
+            compareAtPrice
+            displayName
+            image{
+              url
+            }
+          }
+        }
+      }
+    `
+	})
+	query += "}"
+
+	return query
+}
+
+export const getProductMetadataFromShopify = async (store, carouselProductIds, upsellToReturn) => {
 	const accessToken = (await getStoreData(store, true))?.accessToken || null
-	const productIds = []
+	let carouselItems
 
 	if (!accessToken) {
 		logger.warn("[getUpsellVariantMetadataFromShopify] No access token found", { store })
 		return null
 	}
+	const query = buildProductVariantQuery(carouselProductIds)
+	const res = await graphqlProxy(store, accessToken, query)
 
-	const res = await graphqlProxy(
-		store,
-		accessToken,
-		`{
-		productVariant(id: "gid://shopify/ProductVariant/${variantId}") {
-			image {
-				url
-			}
-			price
-			compareAtPrice
-			availableForSale
-			displayName
-			product {
-				title
-				description
-				featuredImage {
-					url
+	if (res?.body?.data) {
+		carouselItems = Object.keys(res.body.data).map((key) => {
+			return res.body.data[key]?.variants?.nodes?.map((variant) => {
+				return {
+					id: variant?.id || null,
+					image: variant?.image?.url || null,
+					price: variant?.price || null,
+					compareAtPrice: variant?.compareAtPrice || null,
+					availableForSale: variant?.availableForSale || null,
+					variantName: variant?.displayName?.includes("Default Title") ? res.body.data[key]?.title : variant?.displayName,
 				}
-			}
-		}
-	}`
-	)
-
-	const image = res?.body?.data?.productVariant?.image?.url || res?.body?.data?.productVariant?.product?.featuredImage?.url || null
-	const price = res?.body?.data?.productVariant?.price || null
-	const compareAtPrice = res?.body?.data?.productVariant?.compareAtPrice || null
-	const availableForSale = res?.body?.data?.productVariant?.availableForSale ?? false
-	const description = res?.body?.data?.productVariant?.product?.description
-	const variantName = res?.body?.data?.productVariant?.displayName?.includes("Default Title")
-		? res?.body?.data?.productVariant?.product?.title
-		: res?.body?.data?.productVariant?.displayName
+			})
+		})
+	}
 
 	return {
 		...upsellToReturn,
-		image,
-		price,
-		compareAtPrice,
-		availableForSale,
-		description,
-		variantName,
+		carouselItems,
 	}
 }
 
@@ -187,16 +194,11 @@ export const getCarousel = async (productId, store) => {
 
 	for (const carousel of carouselArr) {
 		if (carousel.published && carousel.store && carousel.carouselItems.length) {
-			const productMetadataPromise = getUpsellVariantMetadataFromShopify(carousel.store, carousel.upsellVariantId, {
+			const productMetadataPromise = getProductMetadataFromShopify(carousel.store, carousel.carouselItems, {
 				id: carousel.id,
-				autoCheck: carousel.autoCheck,
 				displayText: carousel.displayText,
 				positioning: carousel.positioning,
-				priority: carousel.priority,
 				styling: carousel.styling,
-				upsellProductId: carousel.upsellProductId,
-				upsellVariantId: carousel.upsellVariantId,
-				seeMoreEnabled: carousel.seeMoreEnabled,
 			})
 
 			if (productMetadataPromise) {

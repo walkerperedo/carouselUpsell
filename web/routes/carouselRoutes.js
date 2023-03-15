@@ -96,7 +96,7 @@ router.put("/getCarousel/:productId", async (req, res) => {
 		const carousel = await getCarousel(req.params.productId, req.query.store || "")
 		logger.info("/getCarousel carousel retrieved", carousel.length)
 
-		return res.status(200).send({ carousel })
+		return res.status(200).send({ carousel: carousel.length ? carousel[0] : null })
 	} catch (error) {
 		logger.warn("/getCarousel catched error", { error })
 		return res.status(500).send({ error: error.message })
